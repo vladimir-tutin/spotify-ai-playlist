@@ -2,7 +2,8 @@
 
 A full-stack web application that uses AI to analyze your music taste and create personalized Spotify playlists tailored to your preferences.
 
-![AI Powered Playlist](https://github.com/user-attachments/assets/6e083353-3d72-49a1-ab97-f4daa6fd5eb1)
+![AI Powered Playlist](https://github.com/user-attachments/assets/1ecd2321-6368-4a0c-94db-c15fae4964bc)
+
 
 
 ## Features
@@ -225,13 +226,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 
 ### Dashboard
-![Dashboard](https://github.com/user-attachments/assets/77fd7f80-5145-4fd1-99c3-dd82ef142ed9)
+![Dashboard](https://github.com/user-attachments/assets/a51bc2df-e0a1-4e94-b6cb-63a863118c14)
 
 
 ### Playlist Creator
-![Playlist Creator](https://github.com/user-attachments/assets/6369a1dc-33cc-4838-ac55-10c54e5da1d6)
+![Playlist Creator](https://github.com/user-attachments/assets/c07e035a-44e9-4f93-9581-c9dd49ccb594)
 
 
 ### Generation Results
-![Geneartion Results](https://github.com/user-attachments/assets/3ee8c814-74e2-4afd-baff-ea2463059402)
+![Geneartion Results](https://github.com/user-attachments/assets/feb07104-4064-444d-8338-174aed5c88bf)
+
 
