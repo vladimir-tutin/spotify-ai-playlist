@@ -1,0 +1,38 @@
+/* Base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  color: #121212;
+  background-color: #fff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Define global variables */
+:root {
+  --primary-color: #1db954;
+  --primary-dark: #1aa34a;
+  --text-color: #121212;
+  --background-color: #fff;
+  --secondary-background: #f8f8f8;
+  --border-color: #e0e0e0;
+  --error-color: #e74c3c;
+  --dark-background: #121212;
+  --dark-text: #f8f8f8;
+  --gray-text: #9e9e9e;
+  --card-background: #fff;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+}

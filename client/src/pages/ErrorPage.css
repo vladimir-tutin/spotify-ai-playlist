@@ -1,0 +1,44 @@
+/* client/src/pages/ErrorPage.css */
+.error-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+  }
+  
+  .error-container {
+    max-width: 500px;
+    padding: 32px;
+    text-align: center;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+  }
+  
+  .error-page h1 {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    color: var(--error-color);
+  }
+  
+  .error-message {
+    font-size: 1.125rem;
+    margin-bottom: 24px;
+    color: var(--text-color);
+  }
+  
+  .return-button {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 24px;
+    font-weight: 600;
+    transition: background-color var(--transition-speed) ease,
+                transform var(--transition-speed) ease;
+  }
+  
+  .return-button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+  }

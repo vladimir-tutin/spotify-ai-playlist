@@ -1,0 +1,139 @@
+/* client/src/pages/Home.css */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 16px;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  text-align: center;
+}
+
+.home-content {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  background: linear-gradient(to right, #1db954, #25f075);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.subheading {
+  font-size: 1.125rem;
+  margin-bottom: 24px;
+  opacity: 0.9;
+  max-width: 100%;
+  text-align: center;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  gap: 16px;
+  width: 100%;
+}
+
+.feature {
+  flex: 0 1 calc(33.333% - 32px);
+  min-width: 200px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.feature:hover {
+  transform: translateY(-10px);
+}
+
+.feature i {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.feature h3 {
+  margin-bottom: 8px;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #121212;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: auto;
+  margin: 0 auto;
+}
+
+.login-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.login-button img {
+  height: 24px;
+  margin-right: 12px;
+}
+
+@media (max-width: 768px) {
+  .home-container h1 {
+    font-size: 2rem;
+  }
+  
+  .features {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .feature {
+    flex: 0 1 100%;
+    margin: 8px 0;
+  }
+  
+  .subheading {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 16px 8px;
+  }
+  
+  .home-container h1 {
+    font-size: 1.75rem;
+  }
+  
+  .subheading {
+    font-size: 0.9rem;
+  }
+  
+  .feature {
+    padding: 12px;
+  }
+  
+  .feature i {
+    font-size: 2rem;
+  }
+}

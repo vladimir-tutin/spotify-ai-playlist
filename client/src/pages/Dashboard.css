@@ -1,0 +1,306 @@
+/* Updated Dashboard.css - Modernized to match create and generation pages */
+.dashboard {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  overflow: hidden;
+}
+
+.dashboard-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 24px 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px); /* Assuming header is approximately 64px */
+}
+
+.dashboard-welcome {
+  margin-bottom: 0;
+  text-align: center;
+  padding: 0 0 8px;
+}
+
+.dashboard-welcome h1 {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+  margin-top: 0;
+  color: var(--text-color);
+}
+
+.dashboard-welcome p {
+  font-size: 1rem;
+  color: var(--gray-text);
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+
+.create-button {
+  padding: 8px 24px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color var(--transition-speed) ease,
+              transform var(--transition-speed) ease;
+  box-shadow: var(--card-shadow);
+}
+
+.create-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+}
+
+.user-playlists-section {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 12px 24px 24px 24px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  min-height: 350px; /* Increased minimum height for smaller screens */
+  position: relative; /* For absolute positioning of see-all-container */
+  overflow: hidden; /* Contain the scroll area */
+}
+
+.user-playlists-section h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.playlists-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 0;
+  padding-bottom: 70px; /* More space for the floating button */
+  height: 100%;
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  flex: 1;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-playlists {
+  text-align: center;
+  color: var(--gray-text);
+  padding: 48px;
+  font-size: 1.1rem;
+}
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 8px;
+  flex: 1;
+}
+
+.playlist-card {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform var(--transition-speed) ease,
+              box-shadow var(--transition-speed) ease;
+  background-color: var(--secondary-background);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.playlist-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.playlist-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.playlist-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.playlist-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.playlist-info {
+  padding: 12px;
+}
+
+.playlist-info h3 {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-info p {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: var(--gray-text);
+}
+
+.playlist-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.action-button {
+  flex: 1;
+  padding: 6px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color var(--transition-speed) ease,
+              transform var(--transition-speed) ease;
+}
+
+.view-button {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.view-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.use-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.use-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.see-all-container {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 10;
+  padding: 0;
+  margin: 0;
+  pointer-events: none; /* Allow scrolling behind the container */
+}
+
+.see-all-button {
+  display: inline-block;
+  padding: 8px 24px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color var(--transition-speed) ease,
+              transform var(--transition-speed) ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  pointer-events: auto; /* Re-enable pointer events for the button */
+}
+
+.see-all-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: white;
+}
+
+/* Custom scrollbar for playlist container */
+.playlists-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.playlists-scroll-container::-webkit-scrollbar-track {
+  background: var(--secondary-background);
+  border-radius: 4px;
+}
+
+.playlists-scroll-container::-webkit-scrollbar-thumb {
+  background-color: var(--gray-text);
+  border-radius: 4px;
+}
+
+.playlists-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .dashboard-welcome {
+    padding: 20px 0;
+  }
+  
+  .dashboard-welcome h1 {
+    font-size: 1.5rem;
+  }
+  
+  .playlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  
+  .user-playlists-section {
+    padding: 16px 16px 40px 16px;
+    min-height: 400px;
+  }
+  
+  .see-all-container {
+    bottom: 24px;
+  }
+  
+  .playlists-scroll-container {
+    padding-bottom: 80px;
+  }
+}

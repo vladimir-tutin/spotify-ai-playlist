@@ -1,0 +1,59 @@
+/* client/src/components/SearchBox.css - Complete file with compact styling */
+.search-box {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--secondary-background);
+  border-radius: 8px;
+  padding: 14px;
+  height: 100%;
+  max-height: 450px;
+}
+
+.search-controls {
+  display: flex;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.search-input-container {
+  flex: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  font-size: 0.9rem;
+  transition: border-color var(--transition-speed) ease;
+}
+
+.search-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.search-type-selector {
+  min-width: 90px;
+}
+
+.type-select {
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  font-size: 0.9rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  cursor: pointer;
+}
+
+.type-select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
