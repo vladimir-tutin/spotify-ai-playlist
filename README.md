@@ -222,7 +222,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Screenshots
 
 ### Home Page
-![Home Page](https://github.com/user-attachments/assets/07c051c2-4d8b-4adf-96a7-c317750ea303)
+![Home Page](https://github.com/user-attachments/assets/78b1a2ec-c251-440b-b83f-1f14d7905880)
+
 
 
 ### Dashboard
