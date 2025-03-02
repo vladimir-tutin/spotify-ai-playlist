@@ -377,7 +377,7 @@ input, select, textarea {
 /* Keep the playlist grid from being squished */
 .playlist-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
   gap: 12px;
   max-width: 100%;
   padding-bottom: 8px;
@@ -455,6 +455,14 @@ input, select, textarea {
     padding: 12px 0;
   }
   
+  .page-subtitle{
+    font-size: 0.75rem;
+  }
+
+  .page-title {
+    font-size: 1.3rem;
+  }
+
   .create-playlist-button,
   .open-spotify-button {
     padding: 10px 24px;
@@ -484,17 +492,9 @@ input, select, textarea {
 }
 
 /* Special adjustments for very narrow screens (like Galaxy Fold) */
-@media (max-width: 320px) {
+@media (max-width: 380px) {
   .content-container {
     padding: 10px 12px 20px;
-  }
-  
-  .page-title {
-    font-size: 1.3rem;
-  }
-  
-  .page-subtitle {
-    font-size: 0.85rem;
   }
   
   .content-panel {
@@ -512,7 +512,7 @@ input, select, textarea {
   }
   
   .playlist-actions {
-    flex-direction: column;
+    flex-direction: row;
     gap: 6px;
   }
   
@@ -526,7 +526,7 @@ input, select, textarea {
   }
 
   .playlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 8px;
   }
   

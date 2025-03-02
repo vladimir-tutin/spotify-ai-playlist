@@ -591,6 +591,7 @@
     width: 100% !important;
     max-width: none !important;
     box-sizing: border-box !important;
+    min-height: 150px !important;
   }
   
   .playlist-creator .search-controls,
@@ -663,7 +664,6 @@
   /* Fix mobile order */
   .selection-section {
     order: 1;
-    margin-bottom: 16px;
   }
   
   .search-section {
