@@ -308,7 +308,7 @@ input, select, textarea {
   margin: 10px 0 5px; /* Consistent 10px gap from top */
   text-align: center;
   color: var(--text-color);
-  z-index: 2;
+  z-index: 1;
 }
 
 /* Consistent subtitle/instruction styling */

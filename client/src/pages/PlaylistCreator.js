@@ -82,7 +82,6 @@ function PlaylistCreator() {
         <div className="content-panel">
           <div className="playlist-details">
             <div className="playlist-name-container">
-              <label htmlFor="playlist-name">Playlist Name</label>
               <input
                 type="text"
                 id="playlist-name"
@@ -94,7 +93,6 @@ function PlaylistCreator() {
             </div>
             
             <div className="playlist-description-container">
-              <label htmlFor="playlist-description">Description (optional)</label>
               <textarea
                 id="playlist-description"
                 value={playlistDescription}
