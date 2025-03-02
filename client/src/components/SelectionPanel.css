@@ -22,6 +22,7 @@
 }
 
 .selection-count {
+  padding-left: 15px;
   font-size: 0.8rem;
   color: var(--gray-text);
 }
@@ -144,20 +145,27 @@
 }
 
 .selected-info h3 {
-  font-size: 0.85rem;
-  margin: 0 0 2px;
-  white-space: nowrap;
+  white-space: normal; /* Allow text to wrap */
+  overflow-wrap: break-word; /* Break long words if needed */
+  max-height: 3em; /* Limit to 2-3 lines */
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  font-size: 80%;
 }
 
 .selected-info p {
-  font-size: 0.75rem;
-  color: var(--gray-text);
-  margin: 0;
-  white-space: nowrap;
+  white-space: normal; /* Allow text to wrap */
+  overflow-wrap: break-word; /* Break long words if needed */
+  max-height: 2em;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Limit to 1 line */
+  -webkit-box-orient: vertical;
+  font-size: 80%;
 }
 
 .remove-button {

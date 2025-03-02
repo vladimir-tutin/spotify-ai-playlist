@@ -51,6 +51,47 @@ input, select, textarea {
   font-size: 16px;
 }
 
+/*Beta Banner*/
+/* Golden Beta Banner */
+/* Compact Golden Beta Banner */
+.beta-banner {
+  position: fixed;
+  top: 0px;
+  left: -50px;
+  width: 160px;
+  height: 40px;
+  background: linear-gradient(45deg, rgba(255, 215, 0, 0.4), rgba(255, 165, 0, 0.7));
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 8; /* Ensure it's behind header but above other content */
+  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+.beta-banner-text {
+  color: #8B4513;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  transform: rotate(0deg); /* Counter-rotate text to be readable */
+}
+
+/* Ensure banner works across different page layouts */
+.page-container .beta-banner,
+.app .beta-banner {
+  position: fixed;
+}
+.app-header t{
+  position: relative;
+  z-index: 9;
+}
+.logo-text {
+  position: relative;
+  z-index: 10; /* Highest z-index to ensure it's on top */
+}
 .app {
   min-height: 100vh;
   display: flex;
@@ -267,6 +308,7 @@ input, select, textarea {
   margin: 10px 0 5px; /* Consistent 10px gap from top */
   text-align: center;
   color: var(--text-color);
+  z-index: 2;
 }
 
 /* Consistent subtitle/instruction styling */

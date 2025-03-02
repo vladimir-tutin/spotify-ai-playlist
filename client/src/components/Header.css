@@ -1,10 +1,14 @@
 /* client/src/components/Header.css */
 .app-header {
-    background-color: var(--dark-background);
-    color: var(--dark-text);
-    padding: 16px 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
+  background-color: var(--dark-background);
+  color: var(--dark-text);
+  padding: 10px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky; /* New addition */
+  top: 0; /* Stick to the top of its container */
+  z-index: 1; /* Ensure it stays above other content */
+  width: 100%; /* Full width */
+}
   
   .header-container {
     max-width: 1280px;
@@ -73,3 +77,17 @@
   .logout-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
+
+  @media (max-width: 768px) {
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-profile {
+      scale: 75%;
+      transform-origin: right center; /* Ensure scaling happens from right side */
+      margin-right: -20px; /* Adjust as needed to fine-tune positioning */
+    }
+}

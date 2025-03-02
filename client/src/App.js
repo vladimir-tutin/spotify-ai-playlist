@@ -16,6 +16,9 @@ function App() {
     <AuthProvider>
       <PlaylistProvider>
         <div className="app">
+        <div className="beta-banner">
+          <span className="beta-banner-text">Beta</span>
+        </div>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={
