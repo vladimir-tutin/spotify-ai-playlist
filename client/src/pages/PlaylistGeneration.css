@@ -625,22 +625,6 @@
 .recommendation-grid::-webkit-scrollbar-thumb:hover {
   background-color: var(--primary-color);
 }
-
-.page-container {
-  min-height: 100vh;
-  max-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto; /* Enable scrolling at the highest level */
-}
-
-/* Make sure content container doesn't force a fixed height */
-.content-container {
-  flex: 1;
-  overflow-y: visible; /* Allow content to extend beyond */
-  padding-bottom: 120px; /* Extra padding for the fixed button */
-}
-
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -686,27 +670,28 @@
 
 /* Mobile and Responsive Adjustments */
 @media (max-width: 768px) {
-  .page-container {
+  .tracks-grid {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: calc(100vh - 250px);
     overflow-y: auto;
   }
 
-  .tracks-grid {
-    max-height: none; /* Remove the height constraint */
-    overflow-y: visible; /* Don't make this scrollable on mobile */
-  }
   .user-selection-section,
   .recommendations-section {
-    height: auto; /* Allow sections to take natural height */
-    max-height: none;
-    overflow-y: visible; /* Don't scroll within sections */
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 16px;
+    max-height: 350px;
+    overflow-y: auto;
   }
-  
+
   .track-list,
   .recommendation-grid {
-    max-height: 350px; /* Keep scrollable panels within sections */
-  }
-  .content-panel {
-    height: auto; /* Ensure panels can expand */
+    overflow-y: auto;
   }
 
   /* Scrollbar for mobile */

@@ -172,55 +172,7 @@
   border-radius: 50%;
 }
 
-/* Media query adjustment for mobile */
-@media (max-width: 768px) {
-  .song-count-section {
-    flex-wrap: nowrap;
-    align-items: center;
-  }
-  
-  .song-count-container {
-    flex-shrink: 0;
-  }
-  
-  .song-count-adjust-button {
-    width: 24px;
-    height: 24px;
-    font-size: 0.9rem;
-  }
-  
-  .song-count-container label {
-    font-size: 0.85rem;
-  }
-  
-  .song-count-container span {
-    min-width: 20px;
-    font-size: 0.9rem;
-  }
-}
-
-/* For very small screens */
-@media (max-width: 480px) {
-  /* Even on very small screens, keep it on one line but make everything smaller */
-  .song-count-container label {
-    font-size: 0.8rem;
-  }
-  
-  .song-count-adjust-button {
-    width: 22px;
-    height: 22px;
-    font-size: 0.8rem;
-  }
-  
-  .song-count-container {
-    gap: 4px; /* Reduce gap between elements */
-  }
-  
-  .slider-container {
-    margin-left: 4px;
-  }
-}
-
+/* Default grid layout for larger screens */
 .playlist-creator-grid {
   display: grid;
   grid-template-columns: 3fr 1fr;
@@ -294,12 +246,120 @@
   cursor: not-allowed;
 }
 
-/* Mobile Responsiveness */
+/* Override layout for screens narrower than 768px */
 @media (max-width: 768px) {
-  .playlist-creator-grid {
-    grid-template-columns: 1fr;
+  /* Container adjustments to ensure proper width */
+  .content-container {
+    width: 100%;
+    padding: 10px 16px;
+    box-sizing: border-box;
   }
   
+  /* Change to vertical layout with selection panel on top */
+  .playlist-creator-grid {
+    grid-template-columns: 1fr; /* Full width single column */
+    grid-template-rows: auto auto;
+    width: 100%;
+    gap: 12px;
+  }
+  
+  /* Reorder the grid to put selection panel above search */
+  .selection-section {
+    grid-row: 1;
+    width: 100%; /* Ensure full width */
+  }
+  
+  .search-section {
+    grid-row: 2;
+    width: 100%; /* Ensure full width */
+  }
+  
+  /* Make selection panel fit horizontally */
+  .selection-panel {
+    max-height: 280px; /* Limit overall height */
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Make search box fit horizontally */
+  .search-box {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Fix the height of the selected-items container */
+  .selected-items {
+    max-height: 180px; /* This will limit to about 3 items before scrolling */
+    width: 100%;
+  }
+  
+  /* Ensure the tracks container scrolls properly */
+  .tracks-container,
+  .artists-container,
+  .albums-container,
+  .playlists-container {
+    max-height: 165px; /* Adjust to show approximately 3 items */
+    width: 100%;
+  }
+  
+  /* Make selection items slightly more compact on small screens */
+  .selected-item {
+    padding: 6px 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .selected-image-wrapper {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
+  
+  .selected-info h3 {
+    font-size: 0.8rem;
+  }
+  
+  .selected-info p {
+    font-size: 0.7rem;
+  }
+  
+  .remove-button {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Ensure search controls fit properly */
+  .search-controls {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .search-input-container {
+    flex: 1;
+  }
+  
+  /* Make search results fit horizontally */
+  .search-results {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Make the playlist info container fit properly */
+  .playlist-info-container {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px;
+  }
+  
+  /* Ensure input fields fill the width */
+  .playlist-name-container input,
+  .playlist-description-container textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   .playlist-creator h1 {
     font-size: 1.5rem;
   }
@@ -336,7 +396,54 @@
   }
 }
 
-@media (max-width: 380px) {
+/* Even narrower screens adjustments */
+@media (max-width: 480px) {
+  .content-container {
+    padding: 10px 12px;
+  }
+  
+  .selection-panel {
+    max-height: 250px;
+    padding: 10px;
+  }
+  
+  .search-box {
+    padding: 10px;
+  }
+  
+  .selection-header h2,
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  
+  .selection-count {
+    font-size: 0.7rem;
+  }
+  
+  .tab-button {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+  
+  /* Adjust buttons to fit width */
+  .fixed-button-container {
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .buttons-wrapper {
+    width: 100%;
+    gap: 10px;
+  }
+  
+  .primary-action-button,
+  .secondary-action-button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
   .playlist-details {
     gap: 8px;
   }
@@ -345,5 +452,181 @@
   .playlist-description-container textarea {
     padding: 10px;
     font-size: 0.9rem;
+  }
+  
+  /* Song count slider adjustments for very small screens */
+  .song-count-section {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  
+  .song-count-container {
+    flex-shrink: 0;
+  }
+  
+  .song-count-adjust-button {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+  
+  .song-count-container label {
+    font-size: 0.85rem;
+  }
+  
+  .song-count-container span {
+    min-width: 20px;
+    font-size: 0.9rem;
+  }
+  
+  /* For very small screens */
+  .song-count-container label {
+    font-size: 0.8rem;
+  }
+  
+  .song-count-adjust-button {
+    width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+  }
+  
+  .song-count-container {
+    gap: 4px; /* Reduce gap between elements */
+  }
+  
+  .slider-container {
+    margin-left: 4px;
+  }
+}
+
+/* High-specificity CSS overrides for PlaylistCreator
+   Add this to the bottom of your PlaylistCreator.css file to override any conflicting styles */
+
+/* Force the grid to stack vertically on mobile with !important */
+@media (max-width: 768px) {
+  .playlist-creator .playlist-creator-grid,
+  .page-container .playlist-creator-grid,
+  .content-container .playlist-creator-grid,
+  body .playlist-creator-grid,
+  div[class*="playlist-creator"] .playlist-creator-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important; 
+    grid-template-rows: auto auto !important;
+    width: 100% !important;
+    gap: 12px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Force selection section above search section */
+  .playlist-creator .selection-section,
+  .page-container .selection-section,
+  .content-container .selection-section,
+  body .selection-section,
+  div[class*="playlist-creator"] .selection-section {
+    grid-row: 1 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    max-width: none !important;
+  }
+  
+  .playlist-creator .search-section,
+  .page-container .search-section,
+  .content-container .search-section,
+  body .search-section,
+  div[class*="playlist-creator"] .search-section {
+    grid-row: 2 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    max-width: none !important;
+  }
+  
+  /* Ensure panels fit the width */
+  .playlist-creator .selection-panel,
+  .page-container .selection-panel,
+  .content-container .selection-panel,
+  body .selection-panel {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: 12px !important;
+    margin: 0 !important;
+  }
+  
+  .playlist-creator .search-box,
+  .page-container .search-box,
+  .content-container .search-box,
+  body .search-box {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: 12px !important;
+    margin: 0 !important;
+  }
+  
+  /* Selected items container height */
+  .playlist-creator .selected-items,
+  .page-container .selected-items,
+  .content-container .selected-items,
+  body .selected-items {
+    max-height: 180px !important;
+    overflow-y: auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure track containers scroll properly */
+  .playlist-creator .tracks-container,
+  .playlist-creator .artists-container,
+  .playlist-creator .albums-container,
+  .playlist-creator .playlists-container,
+  .content-container .tracks-container,
+  .content-container .artists-container,
+  .content-container .albums-container,
+  .content-container .playlists-container,
+  body .tracks-container,
+  body .artists-container,
+  body .albums-container,
+  body .playlists-container {
+    max-height: 165px !important;
+    overflow-y: auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure the search results and inputs fit properly */
+  .playlist-creator .search-results,
+  .content-container .search-results,
+  body .search-results {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+  
+  .playlist-creator .search-controls,
+  .content-container .search-controls,
+  body .search-controls {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  
+  .playlist-creator .search-input-container,
+  .content-container .search-input-container,
+  body .search-input-container {
+    flex: 1 !important;
+  }
+  
+  /* Force any flexbox to respect width */
+  .playlist-creator [class*="section"],
+  .playlist-creator [class*="panel"],
+  .playlist-creator [class*="box"],
+  .playlist-creator [class*="container"] {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
   }
 }
