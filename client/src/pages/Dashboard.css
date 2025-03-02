@@ -1,4 +1,4 @@
-/* Updated Dashboard.css - Modernized to match create and generation pages */
+/* Complete Dashboard.css with improved button styling */
 .dashboard {
   height: 100vh;
   display: flex;
@@ -38,7 +38,7 @@
 }
 
 .create-button {
-  padding: 8px 24px;
+  padding: 12px 28px;
   background-color: var(--primary-color);
   color: white;
   border-radius: 30px;
@@ -47,6 +47,8 @@
   transition: background-color var(--transition-speed) ease,
               transform var(--transition-speed) ease;
   box-shadow: var(--card-shadow);
+  border: none;
+  cursor: pointer;
 }
 
 .create-button:hover {
@@ -59,6 +61,7 @@
   flex-direction: column;
   gap: 0;
   flex: 1;
+  position: relative;
 }
 
 .user-playlists-section {
@@ -87,7 +90,7 @@
   overflow-y: auto;
   padding-right: 8px;
   margin-bottom: 0;
-  padding-bottom: 70px; /* More space for the floating button */
+  padding-bottom: 100px; /* More space for the floating button */
   height: 100%;
 }
 
@@ -202,6 +205,8 @@
   text-align: center;
   transition: background-color var(--transition-speed) ease,
               transform var(--transition-speed) ease;
+  cursor: pointer;
+  border: none;
 }
 
 .view-button {
@@ -224,21 +229,22 @@
   transform: translateY(-2px);
 }
 
+/* Improved see-all-container with fixed positioning */
 .see-all-container {
-  position: absolute;
-  bottom: 16px;
+  position: fixed;
+  bottom: 24px;
   left: 0;
   right: 0;
   text-align: center;
   z-index: 10;
-  padding: 0;
-  margin: 0;
+  padding: 16px 0;
+  background: linear-gradient(to top, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
   pointer-events: none; /* Allow scrolling behind the container */
 }
 
 .see-all-button {
   display: inline-block;
-  padding: 8px 24px;
+  padding: 12px 28px;
   background-color: var(--primary-color);
   color: white;
   border-radius: 30px;
@@ -249,6 +255,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   text-decoration: none;
   pointer-events: auto; /* Re-enable pointer events for the button */
+  border: none;
 }
 
 .see-all-button:hover {
@@ -277,6 +284,7 @@
   background-color: var(--primary-color);
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .dashboard-welcome {
     padding: 20px 0;
@@ -284,6 +292,11 @@
   
   .dashboard-welcome h1 {
     font-size: 1.5rem;
+  }
+  
+  .create-button {
+    padding: 10px 24px;
+    font-size: 0.95rem;
   }
   
   .playlist-grid {
@@ -297,10 +310,51 @@
   }
   
   .see-all-container {
-    bottom: 24px;
+    bottom: 16px;
+    padding: 12px 0;
   }
   
-  .playlists-scroll-container {
-    padding-bottom: 80px;
+  .see-all-button {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Special adjustments for very narrow screens (like Galaxy Fold) */
+@media (max-width: 320px) {
+  .dashboard-welcome h1 {
+    font-size: 1.25rem;
+  }
+  
+  .dashboard-welcome p {
+    font-size: 0.85rem;
+  }
+  
+  .create-button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+  
+  .playlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  
+  .playlist-info h3 {
+    font-size: 0.8rem;
+  }
+  
+  .playlist-info p {
+    font-size: 0.75rem;
+  }
+  
+  .action-button {
+    font-size: 0.7rem;
+  }
+  
+  .see-all-button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    max-width: 80%;
   }
 }

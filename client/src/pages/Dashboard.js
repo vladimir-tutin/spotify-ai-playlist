@@ -78,11 +78,11 @@ export default function Dashboard() {
     <div className="dashboard">
       <Header user={currentUser} onLogout={logout} />
       
-      <div className="dashboard-container">
+      <div className="dashboard-container content-with-fixed-buttons">
         <section className="dashboard-welcome">
           <h1>Welcome, {currentUser?.display_name}</h1>
           <p>Ready to create your next playlist?</p>
-          <button className="create-button" onClick={handleCreateNew}>
+          <button className="primary-action-button" onClick={handleCreateNew}>
             Create New Playlist
           </button>
         </section>
@@ -122,12 +122,12 @@ export default function Dashboard() {
                               href={playlist.external_urls.spotify} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="action-button view-button"
+                              className="secondary-action-button action-button"
                             >
                               Open
                             </a>
                             <button 
-                              className="action-button use-button"
+                              className="primary-action-button action-button"
                               onClick={() => handleUsePlaylist(playlist)}
                             >
                               Enhance
@@ -139,16 +139,18 @@ export default function Dashboard() {
                   </div>
                 </div>
                 
-                <div className="see-all-container">
-                  <a 
-                    href="https://open.spotify.com/collection/playlists" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="see-all-button"
-                  >
-                    See all in Spotify
-                  </a>
-                </div>
+                <div className="fixed-button-container">
+  <div className="single-button-container">
+    <a 
+      href="https://open.spotify.com/collection/playlists" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="primary-action-button"
+    >
+      See All In Spotify
+    </a>
+  </div>
+</div>
               </>
             )}
           </div>

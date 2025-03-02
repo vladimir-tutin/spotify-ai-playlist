@@ -1,4 +1,4 @@
-// client/src/pages/PlaylistGeneration.js - Fixed to properly show selected tracks
+// Updated PlaylistGeneration.js with consistent button styling
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePlaylist } from '../contexts/PlaylistContext';
@@ -252,7 +252,7 @@ function PlaylistGeneration() {
     <div className="playlist-generation">
       <Header />
       
-      <div className="playlist-generation-container">
+      <div className="playlist-generation-container content-with-fixed-buttons">
         <h1>Your AI-Powered Playlist</h1>
         
         {loading && (
@@ -292,7 +292,7 @@ function PlaylistGeneration() {
           <div className="error-section">
             <h2>Something went wrong</h2>
             <p>{error}</p>
-            <button onClick={navigateHome}>Return to Dashboard</button>
+            <button className="primary-action-button" onClick={navigateHome}>Return to Dashboard</button>
           </div>
         )}
         
@@ -390,33 +390,26 @@ function PlaylistGeneration() {
               </div>
             </div>
             
-            <div className="action-bar">
-              {!complete ? (
-                <button 
-                  className="create-playlist-button" 
-                  onClick={createPlaylist}
-                  disabled={generating}
-                >
-                  {generating ? 'Creating...' : 'Create Playlist in Spotify'}
-                </button>
-              ) : (
-                <div className="complete-message">
-                  <h2>Playlist Created!</h2>
-                  <button className="open-spotify-button" onClick={openPlaylist}>
-                    Open in Spotify
-                  </button>
-                </div>
-              )}
-              
-              {generating && (
-                <div className="progress-container">
-                  <div className="progress-bar">
-                    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-                  </div>
-                  <p>{progress < 100 ? 'Creating your playlist...' : 'Complete!'}</p>
-                </div>
-              )}
-            </div>
+            <div className="fixed-button-container">
+  <div className="single-button-container">
+    {!complete ? (
+      <button 
+        className="primary-action-button" 
+        onClick={createPlaylist}
+        disabled={generating}
+      >
+        {generating ? 'Creating...' : 'Create Playlist in Spotify'}
+      </button>
+    ) : (
+      <div className="complete-message">
+        <h2>Playlist Created!</h2>
+        <button className="primary-action-button" onClick={openPlaylist}>
+          Open in Spotify
+        </button>
+      </div>
+    )}
+  </div>
+</div>
           </div>
         )}
       </div>

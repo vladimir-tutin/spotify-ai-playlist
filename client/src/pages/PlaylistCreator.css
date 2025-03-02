@@ -1,56 +1,4 @@
-.song-count-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.song-count-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.song-count-adjust-button {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 0;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color var(--transition-speed) ease;
-}
-
-.song-count-adjust-button:hover {
-  background-color: var(--primary-dark);
-}
-
-.song-count-adjust-button:disabled {
-  background-color: var(--border-color);
-  cursor: not-allowed;
-}
-
-.song-count-container span {
-  min-width: 30px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.slider-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.slider-container .song-slider {
-  flex: 1;
-}/* Updated PlaylistCreator.css for more consistent styling */
+/* Playlist Creator Styles with Mobile Optimization */
 .playlist-creator {
   min-height: 100vh;
   display: flex;
@@ -139,18 +87,80 @@
   height: 80px;
 }
 
+/* Song Count Section Styling */
 .song-count-section {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  width: 100%;
 }
 
 .song-count-container {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.song-count-adjust-button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+  flex-shrink: 0;
+}
+
+.song-count-adjust-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.song-count-adjust-button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+.song-count-container span {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 500;
+  flex-shrink: 0;
 }
 
 .slider-container {
-  flex: 2;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.song-slider {
+  flex: 1;
+  width: 100%;
+  height: 4px;
+  background: var(--border-color);
+  appearance: none;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.song-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  cursor: pointer;
+  border-radius: 50%;
 }
 
 .playlist-creator-grid {
@@ -174,41 +184,6 @@
   text-align: center;
   margin: 12px 0;
   font-size: 0.9rem;
-}
-
-.slider-container {
-  position: relative;
-}
-
-.song-slider {
-  width: 100%;
-  -webkit-appearance: none;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--border-color);
-  outline: none;
-  margin: 0;
-}
-
-.song-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.song-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  cursor: pointer;
-  transition: background-color 0.2s;
-  border: none;
 }
 
 .actions {
@@ -261,6 +236,7 @@
   cursor: not-allowed;
 }
 
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .playlist-creator-grid {
     grid-template-columns: 1fr;
@@ -272,5 +248,58 @@
   
   .instruction {
     font-size: 0.85rem;
+  }
+
+  .playlist-info-container {
+    padding: 12px;
+  }
+
+  .playlist-creator-container {
+    padding: 10px 12px;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 12px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+
+  .clear-button,
+  .generate-button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .song-count-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .song-count-container {
+    justify-content: space-between;
+  }
+
+  .slider-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .playlist-details {
+    gap: 8px;
+  }
+
+  .playlist-name-container input,
+  .playlist-description-container textarea {
+    padding: 10px;
+    font-size: 0.9rem;
   }
 }

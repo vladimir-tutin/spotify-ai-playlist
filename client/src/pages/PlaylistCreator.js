@@ -1,4 +1,4 @@
-// client/src/pages/PlaylistCreator.js - Updated with new styling and layout
+// Updated PlaylistCreator.js with consistent button styling
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlaylist } from '../contexts/PlaylistContext';
@@ -71,7 +71,7 @@ function PlaylistCreator() {
     <div className="playlist-creator">
       <Header />
       
-      <div className="playlist-creator-container">
+      <div className="playlist-creator-container content-with-fixed-buttons">
         <h1>Create Your AI-Enhanced Playlist</h1>
         <p className="instruction">
           Select your favorite tracks, artists, albums, or playlists. Our AI will analyze 
@@ -151,27 +151,30 @@ function PlaylistCreator() {
           </div>
         </div>
         
-        <div className="actions">
-          <button 
-            className="clear-button" 
-            onClick={clearSelections}
-            disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
-                       selectedAlbums.length === 0 && selectedPlaylists.length === 0 && 
-                       playlistName === '')}
-          >
-            Clear All
-          </button>
-          
-          <button 
-            className="generate-button" 
-            onClick={handleSubmit}
-            disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
-                       selectedAlbums.length === 0 && selectedPlaylists.length === 0) || 
-                      !playlistName.trim()}
-          >
-            {loading ? 'Processing...' : 'Generate Playlist'}
-          </button>
-        </div>
+        // Update for PlaylistCreator.js - Keep Clear All left, Generate right
+<div className="fixed-button-container">
+  <div className="buttons-wrapper">
+    <button 
+      className="secondary-action-button" 
+      onClick={clearSelections}
+      disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
+                selectedAlbums.length === 0 && selectedPlaylists.length === 0 && 
+                playlistName === '')}
+    >
+      Clear All
+    </button>
+    
+    <button 
+      className="primary-action-button" 
+      onClick={handleSubmit}
+      disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
+                selectedAlbums.length === 0 && selectedPlaylists.length === 0) || 
+                !playlistName.trim()}
+    >
+      {loading ? 'Processing...' : 'Generate Playlist'}
+    </button>
+  </div>
+</div>
       </div>
     </div>
   );
