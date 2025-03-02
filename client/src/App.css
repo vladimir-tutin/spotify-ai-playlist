@@ -384,59 +384,60 @@ input, select, textarea {
 
 /* Make responsive adjustments consistent */
 @media (max-width: 768px) {
-  .content-container {
-    padding: 10px 16px 20px;
+  .tracks-grid {
+    grid-template-columns: 1fr;
+    gap: 16px; /* Add consistent gap between sections */
+  }
+
+  .user-selection-section,
+  .recommendations-section {
+    height: 300px;
+    width: 100%; /* Ensure full width */
+    margin: 0; /* Remove any default margins */
+    padding: 16px; /* Consistent padding */
   }
   
-  .page-title {
-    font-size: 1.5rem;
-    margin: 10px 0 12px;
-  }
-  
-  .page-subtitle {
-    font-size: 0.9rem;
-    margin-bottom: 16px;
-  }
-  
-  .content-panel {
-    padding: 14px 16px;
-    margin-bottom: 14px;
-  }
-  
-  .primary-action-button,
-  .secondary-action-button {
-    padding: 10px 20px;
-    font-size: 0.95rem;
-  }
-  
-  .fixed-button-container {
-    padding: 12px 0;
-  }
-  
-  .buttons-wrapper {
-    padding: 0 16px;
-  }
-  
-  .playlist-creator-grid {
+  .recommendation-grid {
     grid-template-columns: 1fr;
   }
   
-  .user-selection-section,
-  .recommendations-section {
-    padding: 14px 16px !important;
+  .analysis-details {
+    grid-template-columns: 1fr;
   }
   
+  .analysis-detailed p {
+    max-height: 80px;
+  }
+  
+  .action-bar {
+    padding: 12px 0;
+  }
+  
+  .create-playlist-button,
+  .open-spotify-button {
+    padding: 10px 24px;
+    font-size: 0.95rem;
+  }
+  
+  .thinking-title {
+    font-size: 1.3rem;
+  }
+  
+  .thinking-message {
+    font-size: 1rem;
+  }
+  
+  /* Ensure consistent column layout on mobile */
   .tracks-grid {
-    grid-template-columns: 1fr !important;
+    display: flex;
+    flex-direction: column;
   }
   
-  .playlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-  }
-  
-  .create-button-container .primary-action-button {
-    min-width: 180px;
+  .user-selection-section,
+  .recommendations-section,
+  .analysis-section {
+    flex: 1;
+    max-width: none !important; /* Override any max-width */
   }
 }
 

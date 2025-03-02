@@ -151,23 +151,22 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Track selections grid layout */
+/* Tracks Grid Responsive Layout */
 .tracks-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  margin-bottom: 16px;
+  max-height: none;
+  height: auto;
 }
 
-/* User selection section */
-.user-selection-section {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  padding: 16px 16px 16px 20px;
-  box-shadow: var(--card-shadow);
+/* Ensure sections have consistent styling */
+.user-selection-section,
+.recommendations-section {
   display: flex;
   flex-direction: column;
-  height: 450px;
+  height: 450px; /* Fixed height on desktop */
+  overflow: hidden;
 }
 
 .user-selection-section h2 {
@@ -191,12 +190,11 @@
   color: #856404;
 }
 
-.track-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  overflow-y: auto;
+.track-list,
+.recommendation-grid {
   flex: 1;
+  overflow-y: auto;
+  padding-right: 8px; /* Space for scrollbar */
 }
 
 .track-item {
@@ -362,7 +360,6 @@
   border-radius: 8px;
   padding: 16px 20px;
   box-shadow: var(--card-shadow);
-  margin-bottom: 16px;
 }
 
 .analysis-section h2 {
@@ -607,6 +604,27 @@
   max-width: 500px;
 }
 
+/* Scrollbar styling for desktop */
+.track-list::-webkit-scrollbar,
+.recommendation-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.track-list::-webkit-scrollbar-track,
+.recommendation-grid::-webkit-scrollbar-track {
+  background: var(--secondary-background);
+}
+
+.track-list::-webkit-scrollbar-thumb,
+.recommendation-grid::-webkit-scrollbar-thumb {
+  background-color: var(--gray-text);
+  border-radius: 3px;
+}
+
+.track-list::-webkit-scrollbar-thumb:hover,
+.recommendation-grid::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-color);
+}
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -650,89 +668,57 @@
   }
 }
 
-/* Make it responsive */
+/* Mobile and Responsive Adjustments */
 @media (max-width: 768px) {
   .tracks-grid {
     grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: calc(100vh - 250px);
+    overflow-y: auto;
   }
 
   .user-selection-section,
   .recommendations-section {
-    height: 300px;
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 16px;
+    max-height: 350px;
+    overflow-y: auto;
   }
-  
+
+  .track-list,
   .recommendation-grid {
-    grid-template-columns: 1fr;
+    overflow-y: auto;
   }
-  
-  .analysis-details {
-    grid-template-columns: 1fr;
+
+  /* Scrollbar for mobile */
+  .tracks-grid::-webkit-scrollbar,
+  .track-list::-webkit-scrollbar,
+  .recommendation-grid::-webkit-scrollbar {
+    width: 6px;
   }
-  
-  .analysis-detailed p {
-    max-height: 80px;
+
+  .tracks-grid::-webkit-scrollbar-track,
+  .track-list::-webkit-scrollbar-track,
+  .recommendation-grid::-webkit-scrollbar-track {
+    background: transparent;
   }
-  
-  .action-bar {
-    padding: 12px 0;
-  }
-  
-  .create-playlist-button,
-  .open-spotify-button {
-    padding: 10px 24px;
-    font-size: 0.95rem;
-  }
-  
-  .thinking-title {
-    font-size: 1.3rem;
-  }
-  
-  .thinking-message {
-    font-size: 1rem;
+
+  .tracks-grid::-webkit-scrollbar-thumb,
+  .track-list::-webkit-scrollbar-thumb,
+  .recommendation-grid::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 3px;
   }
 }
 
-/* Special adjustments for very narrow screens (like Galaxy Fold) */
-@media (max-width: 320px) {
-  .playlist-generation h1 {
-    font-size: 1.4rem;
-  }
-  
-  .create-playlist-button,
-  .open-spotify-button {
-    padding: 8px 16px;
-    font-size: 0.85rem;
-    max-width: 90%;
-  }
-  
-  .complete-message h2 {
-    font-size: 1rem;
-    margin-right: 8px;
-  }
-  
-  .complete-message {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .thinking-title {
-    font-size: 1.2rem;
-  }
-  
-  .thinking-message {
-    font-size: 0.9rem;
-  }
-  
-  .genre-chip {
-    font-size: 0.7rem;
-    padding: 3px 8px;
-  }
-  
-  .track-info h3 {
-    font-size: 0.85rem;
-  }
-  
-  .track-info p {
-    font-size: 0.75rem;
+/* Very narrow screens */
+@media (max-width: 380px) {
+  .user-selection-section,
+  .recommendations-section {
+    height: 300px;
   }
 }

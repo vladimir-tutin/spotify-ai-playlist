@@ -336,15 +336,9 @@ function PlaylistGeneration() {
               <div className="content-panel user-selection-section">
                 <h2 className="section-title">Your Selected Tracks</h2>
                 {userTracks.length > 0 ? (
-                  <>
-                    {userTracks.length > 25 && (
-                      <div className="selection-notice">
-                        <p>You selected {userTracks.length} tracks. For optimal analysis, the first 25 tracks were used.</p>
-                      </div>
-                    )}
                     <div className="track-list">
-                      {userTracks.map((track, index) => (
-                        <div className={`track-item ${index >= 25 ? 'track-item-unused' : ''}`} key={track.id || index}>
+                      {userTracks.slice(0, Math.floor(songCount / 2)).map((track) => (
+                        <div className="track-item" key={track.id}>
                           <div className="track-image">
                             {track.album?.images?.[0] ? (
                               <img src={track.album.images[0].url} alt={track.name} />
@@ -356,21 +350,19 @@ function PlaylistGeneration() {
                             <h3>{track.name}</h3>
                             <p>{track.artists ? track.artists.map(a => a.name).join(', ') : 'Unknown Artist'}</p>
                           </div>
-                          {index >= 25 && <span className="track-status">Not used</span>}
                         </div>
                       ))}
                     </div>
-                  </>
-                ) : (
-                  <div className="empty-selection">
-                    <p>
-                      {totalSelectedItems > 0 ? 
-                        `${totalSelectedItems} items analyzed (${selectedTracks.length} tracks, ${selectedArtists.length} artists, ${selectedAlbums.length} albums, ${selectedPlaylists.length} playlists)` :
-                        'No tracks could be found in your selection'
-                      }
-                    </p>
-                  </div>
-                )}
+                  ) : (
+                    <div className="empty-selection">
+                      <p>
+                        {totalSelectedItems > 0 ? 
+                          `${totalSelectedItems} items analyzed (${selectedTracks.length} tracks, ${selectedArtists.length} artists, ${selectedAlbums.length} albums, ${selectedPlaylists.length} playlists)` :
+                          'No tracks could be found in your selection'
+                        }
+                      </p>
+                    </div>
+                  )}
               </div>
               
               {/* AI recommendations section */}
