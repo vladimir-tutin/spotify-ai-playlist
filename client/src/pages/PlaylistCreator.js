@@ -1,4 +1,4 @@
-// Updated PlaylistCreator.js with consistent button styling
+// Updated PlaylistCreator.js with compact song count slider
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlaylist } from '../contexts/PlaylistContext';
@@ -68,17 +68,17 @@ function PlaylistCreator() {
   };
   
   return (
-    <div className="playlist-creator">
+    <div className="page-container">
       <Header />
       
-      <div className="playlist-creator-container content-with-fixed-buttons">
-        <h1>Create Your AI-Enhanced Playlist</h1>
-        <p className="instruction">
+      <div className="content-container content-with-fixed-buttons">
+        <h1 className="page-title">Create Your AI-Enhanced Playlist</h1>
+        <p className="page-subtitle">
           Select your favorite tracks, artists, albums, or playlists. Our AI will analyze 
           your selections and create a perfect playlist for you.
         </p>
         
-        <div className="playlist-info-container">
+        <div className="content-panel">
           <div className="playlist-details">
             <div className="playlist-name-container">
               <label htmlFor="playlist-name">Playlist Name</label>
@@ -123,6 +123,7 @@ function PlaylistCreator() {
                 +
               </button>
             </div>
+            
             <div className="slider-container">
               <input
                 type="range"
@@ -151,30 +152,29 @@ function PlaylistCreator() {
           </div>
         </div>
         
-        // Update for PlaylistCreator.js - Keep Clear All left, Generate right
-<div className="fixed-button-container">
-  <div className="buttons-wrapper">
-    <button 
-      className="secondary-action-button" 
-      onClick={clearSelections}
-      disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
-                selectedAlbums.length === 0 && selectedPlaylists.length === 0 && 
-                playlistName === '')}
-    >
-      Clear All
-    </button>
-    
-    <button 
-      className="primary-action-button" 
-      onClick={handleSubmit}
-      disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
-                selectedAlbums.length === 0 && selectedPlaylists.length === 0) || 
-                !playlistName.trim()}
-    >
-      {loading ? 'Processing...' : 'Generate Playlist'}
-    </button>
-  </div>
-</div>
+        <div className="fixed-button-container">
+          <div className="buttons-wrapper">
+            <button 
+              className="secondary-action-button" 
+              onClick={clearSelections}
+              disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
+                        selectedAlbums.length === 0 && selectedPlaylists.length === 0 && 
+                        playlistName === '')}
+            >
+              Clear All
+            </button>
+            
+            <button 
+              className="primary-action-button" 
+              onClick={handleSubmit}
+              disabled={loading || (selectedTracks.length === 0 && selectedArtists.length === 0 && 
+                        selectedAlbums.length === 0 && selectedPlaylists.length === 0) || 
+                        !playlistName.trim()}
+            >
+              {loading ? 'Processing...' : 'Generate Playlist'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

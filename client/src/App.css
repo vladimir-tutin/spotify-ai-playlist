@@ -239,8 +239,170 @@ input, select, textarea {
   padding-bottom: 90px;
 }
 
-/* Responsive adjustments */
+/* Unified Layout CSS for consistent page structure */
+
+/* Consistent page container across all pages */
+.page-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  overflow: hidden;
+}
+
+/* Unified content container with consistent width across all pages */
+.content-container {
+  max-width: 1124px; /* Consistent maximum width */
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px); /* Accounting for header height */
+}
+
+/* Consistent h1 styling and spacing across all pages */
+.page-title {
+  font-size: 1.6rem;
+  margin: 10px 0 5px; /* Consistent 10px gap from top */
+  text-align: center;
+  color: var(--text-color);
+}
+
+/* Consistent subtitle/instruction styling */
+.page-subtitle {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--gray-text);
+  margin-bottom: 10px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Unified panel styling across all pages */
+.content-panel {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 16px;
+}
+
+/* Section titles within panels */
+.section-title {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Create New Playlist button position */
+.create-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.create-button-container .primary-action-button {
+  width: auto; /* Prevent full width */
+  min-width: 200px; /* Optional: give it a minimum width */
+}
+
+/* Make the Your Playlists section scrollable */
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden; /* Prevent outer scrolling */
+}
+
+.content-panel.playlists-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden; /* Contain scroll area */
+}
+
+.playlists-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 0;
+  padding-bottom: 100px; /* Extra space for the floating button */
+}
+
+/* Keep the playlist grid from being squished */
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  max-width: 100%;
+  padding-bottom: 8px;
+}
+
+/* Additional adjustments to ensure consistency */
+
+/* Override existing panel styling conflicts */
+.user-selection-section,
+.recommendations-section {
+  height: auto !important; /* Override fixed heights */
+  padding: 16px 20px !important; /* Consistent with content-panel */
+  max-height: 450px; /* Still maintain max height */
+}
+
+/* Special fix for recommendations section */
+.recommendations-section::before {
+  right: 16px !important; /* Adjust to match new padding */
+}
+
+/* Make playlist creator grid consistent */
+.playlist-creator-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 16px;
+  max-width: 100%;
+  margin: 0 auto 20px;
+}
+
+/* Make track list scrollable within panels */
+.track-list,
+.recommendation-grid {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+/* Fix the playlist info container */
+.playlist-info-container {
+  max-width: 100%;
+  margin: 0 0 20px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  background-color: var(--secondary-background);
+  box-shadow: var(--card-shadow);
+}
+
+/* Make responsive adjustments consistent */
 @media (max-width: 768px) {
+  .content-container {
+    padding: 10px 16px 20px;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+    margin: 10px 0 12px;
+  }
+  
+  .page-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+  
+  .content-panel {
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  
   .primary-action-button,
   .secondary-action-button {
     padding: 10px 20px;
@@ -255,13 +417,51 @@ input, select, textarea {
     padding: 0 16px;
   }
   
+  .playlist-creator-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-selection-section,
+  .recommendations-section {
+    padding: 14px 16px !important;
+  }
+  
+  .tracks-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
   .content-with-fixed-buttons {
     padding-bottom: 80px;
+  }
+
+  .playlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  
+  .create-button-container .primary-action-button {
+    min-width: 180px;
   }
 }
 
 /* Special adjustments for very narrow screens (like Galaxy Fold) */
 @media (max-width: 320px) {
+  .content-container {
+    padding: 10px 12px 20px;
+  }
+  
+  .page-title {
+    font-size: 1.3rem;
+  }
+  
+  .page-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .content-panel {
+    padding: 12px 14px;
+  }
+  
   .primary-action-button,
   .secondary-action-button {
     padding: 8px 16px;
@@ -270,5 +470,28 @@ input, select, textarea {
   
   .buttons-wrapper {
     gap: 8px;
+  }
+  
+  .playlist-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .action-button {
+    width: 100%;
+  }
+  
+  .user-selection-section,
+  .recommendations-section {
+    padding: 12px 14px !important;
+  }
+
+  .playlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  
+  .create-button-container .primary-action-button {
+    min-width: 150px;
   }
 }

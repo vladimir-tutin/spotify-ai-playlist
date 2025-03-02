@@ -8,7 +8,7 @@
 .playlist-generation-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 20px 24px;
+  padding: 10px 24px;
   width: 100%;
   flex: 1;
   padding-bottom: 100px; /* Add padding to prevent content being hidden behind fixed buttons */

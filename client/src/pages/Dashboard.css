@@ -207,8 +207,28 @@
               transform var(--transition-speed) ease;
   cursor: pointer;
   border: none;
+  height: 28px; /* Add fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* Reduce the previously applied settings from primary/secondary buttons */
+.playlist-card .primary-action-button,
+.playlist-card .secondary-action-button {
+  padding: 6px 8px;
+  font-size: 0.75rem;
+  height: 28px;
+  min-height: unset;
+  line-height: 1;
+  box-shadow: none;
 }
 
+.playlist-card .primary-action-button:hover,
+.playlist-card .secondary-action-button:hover {
+  transform: translateY(-1px);
+}
 .view-button {
   background-color: transparent;
   border: 1px solid var(--border-color);
@@ -317,6 +337,29 @@
   .see-all-button {
     padding: 10px 24px;
     font-size: 0.9rem;
+  }
+  
+  .playlist-card .primary-action-button,
+  .playlist-card .secondary-action-button {
+    padding: 4px 6px;
+    font-size: 0.7rem;
+    height: 24px;
+    min-height: unset;
+    line-height: 1;
+    box-shadow: none;
+  }
+  
+  .playlist-info h3 {
+    font-size: 0.8rem;
+  }
+  
+  .playlist-info p {
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+  
+  .playlist-actions {
+    gap: 6px;
   }
 }
 

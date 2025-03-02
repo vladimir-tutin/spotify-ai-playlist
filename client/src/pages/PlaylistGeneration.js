@@ -249,13 +249,13 @@ function PlaylistGeneration() {
   };
   
   return (
-    <div className="playlist-generation">
-      <Header />
+    <div className="page-container">
+  <Header />
+  
+    <div className="content-container content-with-fixed-buttons">
+      <h1 className="page-title">Your AI-Powered Playlist</h1>
       
-      <div className="playlist-generation-container content-with-fixed-buttons">
-        <h1>Your AI-Powered Playlist</h1>
-        
-        {loading && (
+      {loading && (
   <div className="thinking-section">
     <div className="analyzing-visual">
       <div className="listening-waves"></div>
@@ -333,8 +333,8 @@ function PlaylistGeneration() {
             
             <div className="tracks-grid">
               {/* User selection section */}
-              <div className="user-selection-section">
-                <h2>Your Selected Tracks</h2>
+              <div className="content-panel user-selection-section">
+                <h2 className="section-title">Your Selected Tracks</h2>
                 {userTracks.length > 0 ? (
                   <>
                     {userTracks.length > 25 && (
@@ -374,8 +374,8 @@ function PlaylistGeneration() {
               </div>
               
               {/* AI recommendations section */}
-              <div className="recommendations-section">
-                <h2>AI-Recommended Tracks ({recommendations.length})</h2>
+              <div className="content-panel recommendations-section">
+                <h2 className="section-title">AI-Recommended Tracks ({recommendations.length})</h2>
                 <div className="recommendation-grid">
                   {recommendations.map((rec, index) => (
                     <div key={index} className="recommendation-card">

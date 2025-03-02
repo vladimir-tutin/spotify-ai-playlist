@@ -9,7 +9,7 @@
 .playlist-creator-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 20px 24px;
+  padding: 10px 24px;
   width: 100%;
   flex: 1;
 }
@@ -45,7 +45,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 12px;
 }
 
 .playlist-name-container,
@@ -87,24 +86,34 @@
   height: 80px;
 }
 
-/* Song Count Section Styling */
+/* Compact song count slider styling - fixed for small screens */
 .song-count-section {
   display: flex;
   align-items: center;
-  gap: 12px;
   width: 100%;
+  margin-bottom: 8px;
+  flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 .song-count-container {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
+  white-space: nowrap;
+  flex-shrink: 0; /* Prevent this part from shrinking */
+}
+
+.song-count-container label {
+  margin-bottom: 0;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  flex-shrink: 0; /* Prevent label from shrinking */
 }
 
 .song-count-adjust-button {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,7 +125,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color var(--transition-speed) ease;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
 .song-count-adjust-button:hover {
@@ -129,18 +138,18 @@
 }
 
 .song-count-container span {
-  min-width: 30px;
+  min-width: 24px;
   text-align: center;
   font-weight: 500;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Prevent count from shrinking */
 }
 
 .slider-container {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
+  margin-left: 8px;
+  min-width: 80px; /* Ensure slider always has minimal width */
 }
 
 .song-slider {
@@ -161,6 +170,55 @@
   background: var(--primary-color);
   cursor: pointer;
   border-radius: 50%;
+}
+
+/* Media query adjustment for mobile */
+@media (max-width: 768px) {
+  .song-count-section {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  
+  .song-count-container {
+    flex-shrink: 0;
+  }
+  
+  .song-count-adjust-button {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+  
+  .song-count-container label {
+    font-size: 0.85rem;
+  }
+  
+  .song-count-container span {
+    min-width: 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  /* Even on very small screens, keep it on one line but make everything smaller */
+  .song-count-container label {
+    font-size: 0.8rem;
+  }
+  
+  .song-count-adjust-button {
+    width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+  }
+  
+  .song-count-container {
+    gap: 4px; /* Reduce gap between elements */
+  }
+  
+  .slider-container {
+    margin-left: 4px;
+  }
 }
 
 .playlist-creator-grid {
@@ -275,20 +333,6 @@
   .generate-button {
     width: 100%;
     padding: 12px;
-  }
-
-  .song-count-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .song-count-container {
-    justify-content: space-between;
-  }
-
-  .slider-container {
-    width: 100%;
   }
 }
 

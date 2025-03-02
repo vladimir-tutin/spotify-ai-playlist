@@ -75,34 +75,36 @@ export default function Dashboard() {
   };
   
   return (
-    <div className="dashboard">
-      <Header user={currentUser} onLogout={logout} />
-      
-      <div className="dashboard-container content-with-fixed-buttons">
-        <section className="dashboard-welcome">
-          <h1>Welcome, {currentUser?.display_name}</h1>
-          <p>Ready to create your next playlist?</p>
-          <button className="primary-action-button" onClick={handleCreateNew}>
-            Create New Playlist
-          </button>
-        </section>
+    // Updated Dashboard.js structure for proper scrolling
+
+<div className="page-container">
+  <Header user={currentUser} onLogout={logout} />
+  
+  <div className="content-container content-with-fixed-buttons">
+    <h1 className="page-title">Welcome, {currentUser?.display_name}</h1>
+    <p className="page-subtitle">Ready to create your next playlist?</p>
+    
+    <div className="create-button-container">
+      <button className="primary-action-button" onClick={handleCreateNew}>
+        Create New Playlist
+      </button>
+    </div>
+    
+    <section className="dashboard-content">
+      <div className="content-panel playlists-panel">
+        <h2 className="section-title">Your Playlists</h2>
         
-        <section className="dashboard-content">
-          <div className="user-playlists-section">
-            <h2>Your Playlists</h2>
-            
-            {loading ? (
-              <div className="loading-indicator">
-                <div className="spinner"></div>
-                <p>Loading your playlists...</p>
-              </div>
-            ) : playlists.length === 0 ? (
-              <p className="no-playlists">No playlists found</p>
-            ) : (
-              <>
-                <div className="playlists-scroll-container">
-                  <div className="playlist-grid">
-                    {playlists.map(playlist => (
+        {loading ? (
+          <div className="loading-indicator">
+            <div className="spinner"></div>
+            <p>Loading your playlists...</p>
+          </div>
+        ) : playlists.length === 0 ? (
+          <p className="no-playlists">No playlists found</p>
+        ) : (
+          <div className="playlists-scroll-container">
+            <div className="playlist-grid">
+            {playlists.map(playlist => (
                       <div className="playlist-card" key={playlist.id}>
                         <div className="playlist-image">
                           {playlist.images && playlist.images[0] ? (
@@ -136,26 +138,28 @@ export default function Dashboard() {
                         </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-                
-                <div className="fixed-button-container">
-  <div className="single-button-container">
-    <a 
-      href="https://open.spotify.com/collection/playlists" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className="primary-action-button"
-    >
-      See All In Spotify
-    </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+    
+    {/* Only render the fixed button container if there are playlists */}
+    {!loading && playlists.length > 0 && (
+      <div className="fixed-button-container">
+        <div className="single-button-container">
+          <a 
+            href="https://open.spotify.com/collection/playlists" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="primary-action-button"
+          >
+            See All In Spotify
+          </a>
+        </div>
+      </div>
+    )}
   </div>
 </div>
-              </>
-            )}
-          </div>
-        </section>
-      </div>
-    </div>
   );
 }
