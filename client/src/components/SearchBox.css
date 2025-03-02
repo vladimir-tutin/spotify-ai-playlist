@@ -1,4 +1,4 @@
-/* client/src/components/SearchBox.css - Complete file with compact styling */
+/* client/src/components/SearchBox.css - Updated with label styles */
 .search-box {
   display: flex;
   flex-direction: column;
@@ -7,7 +7,25 @@
   padding: 14px;
   height: 100%;
   max-height: 450px;
+  position: relative;
+  padding-top: 20px; /* Add space for the label */
 }
+
+/* Add the floating label */
+/*.search-box::before {
+  content: "Search Music";
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: white;
+  color: black;
+  padding: 1px 12px;
+  border-radius: 20px;
+  border: 0.5px solid grey;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 1;
+}*/
 
 .search-controls {
   display: flex;

@@ -171,7 +171,7 @@
 
 .user-selection-section h2 {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   font-size: 1.2rem;
 }
 
@@ -301,18 +301,6 @@
   font-size: 1.2rem;
 }
 
-.recommendations-section::before {
-  content: "AI Generated";
-  position: absolute;
-  top: -10px;
-  right: 20px;
-  background-color: var(--primary-color);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
 
 .recommendation-grid {
   display: flex;
@@ -364,15 +352,15 @@
 
 .analysis-section h2 {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   font-size: 1.3rem;
 }
 
 .genre-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 4px;
+  margin-bottom: 8px;
 }
 
 .genre-chip {
@@ -380,7 +368,7 @@
   background-color: var(--primary-color);
   color: white;
   border-radius: 16px;
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   font-weight: 500;
 }
 
@@ -388,29 +376,29 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .analysis-item h3 {
-  margin: 0 0 4px;
-  font-size: 0.9rem;
+  margin: 0 0 3px;
+  font-size: 0.85rem;
 }
 
 .analysis-item p {
   margin: 0;
   color: var(--gray-text);
-  font-size: 0.85rem;
+  font-size: 0.60rem;
 }
 
 .analysis-detailed h3 {
-  margin: 0 0 8px;
-  font-size: 1rem;
+  margin: 0 0 3px;
+  font-size: .9rem;
 }
 
 .analysis-detailed p {
   margin: 0;
   line-height: 1.4;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   max-height: 100px;
   overflow-y: auto;
 }
@@ -678,7 +666,11 @@
     height: calc(100vh - 250px);
     overflow-y: auto;
   }
-
+  .recommendations-section h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+  }
   .user-selection-section,
   .recommendations-section {
     flex: 1;
@@ -784,13 +776,12 @@
     max-height: none !important;
     min-height: auto !important;
     overflow: visible !important;
-    margin-bottom: 16px !important;
   }
   
   /* Only the internal content should scroll */
   .track-list,
   .recommendation-grid {
-    max-height: 350px !important;
+    max-height: 150px !important;
     overflow-y: auto !important;
     border: 1px solid rgba(0,0,0,0.1) !important;
     border-radius: 8px !important;

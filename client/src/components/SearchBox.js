@@ -1,4 +1,4 @@
-// client/src/components/SearchBox.js - Complete fixed version
+// client/src/components/SearchBox.js - Updated with label styling
 import React, { useState, useEffect } from 'react';
 import { usePlaylist } from '../contexts/PlaylistContext';
 import api from '../services/api';

@@ -1,4 +1,4 @@
-// client/src/components/SelectionPanel.js - Fixed removal functionality
+// client/src/components/SelectionPanel.js - Updated with label styling
 import React, { useState } from 'react';
 import { usePlaylist } from '../contexts/PlaylistContext';
 import './SelectionPanel.css';
@@ -58,18 +58,6 @@ function SelectionPanel() {
   
   return (
     <div className="selection-panel">
-      <div className="selection-header">
-        <h2>Your Selection</h2>
-        <span className="selection-count">
-          {selectedTracks.length === 0 
-            ? `No tracks selected yet`
-            : selectedTracks.length <= 25
-            ? `${selectedTracks.length} tracks selected`
-            : `${selectedTracks.length} tracks selected (a random subset will be used in the playlist)`
-          }
-        </span>
-      </div>
-      
       <div className="selection-tabs">
         <button 
           className={`tab-button ${activeTab === 'tracks' ? 'active' : ''}`}

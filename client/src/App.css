@@ -305,10 +305,10 @@ input, select, textarea {
 /* Consistent h1 styling and spacing across all pages */
 .page-title {
   font-size: 1.6rem;
-  margin: 10px 0 5px; /* Consistent 10px gap from top */
+  margin: 5px 0 5px; /* Consistent 10px gap from top */
   text-align: center;
   color: var(--text-color);
-  z-index: 1;
+  z-index: 2;
 }
 
 /* Consistent subtitle/instruction styling */
@@ -336,8 +336,6 @@ input, select, textarea {
   margin-top: 0;
   margin-bottom: 16px;
   font-size: 1.2rem;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--border-color);
 }
 
 /* Create New Playlist button position */
@@ -431,6 +429,11 @@ input, select, textarea {
     gap: 16px; /* Add consistent gap between sections */
   }
 
+  .section-title {
+    margin-top: 0;
+    margin-bottom: 0px;
+    font-size: 1.2rem;
+  }
   .user-selection-section,
   .recommendations-section {
     height: 300px;
@@ -448,7 +451,7 @@ input, select, textarea {
   }
   
   .analysis-detailed p {
-    max-height: 80px;
+    max-height: 50px;
   }
   
   .action-bar {
