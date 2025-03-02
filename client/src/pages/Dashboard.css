@@ -1,10 +1,11 @@
 /* Complete Dashboard.css with improved button styling */
 .dashboard {
   height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background-color: var(--background-color);
-  overflow: hidden;
 }
 
 .dashboard-container {
@@ -14,7 +15,9 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px); /* Assuming header is approximately 64px */
+  flex: 1;
+  overflow: hidden;
+  height: calc(100vh - 64px); /* Accounting for header height */
 }
 
 .dashboard-welcome {
@@ -59,8 +62,8 @@
 .dashboard-content {
   display: flex;
   flex-direction: column;
-  gap: 0;
   flex: 1;
+  overflow: hidden;
   position: relative;
 }
 
@@ -72,9 +75,10 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 200px);
-  min-height: 350px; /* Increased minimum height for smaller screens */
-  position: relative; /* For absolute positioning of see-all-container */
-  overflow: hidden; /* Contain the scroll area */
+  min-height: 350px;
+  max-height: calc(100vh - 200px);
+  overflow: hidden;
+  position: relative;
 }
 
 .user-playlists-section h2 {
@@ -207,14 +211,14 @@
               transform var(--transition-speed) ease;
   cursor: pointer;
   border: none;
-  height: 28px; /* Add fixed height */
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   white-space: nowrap;
 }
-/* Reduce the previously applied settings from primary/secondary buttons */
+
 .playlist-card .primary-action-button,
 .playlist-card .secondary-action-button {
   padding: 6px 8px;
@@ -229,6 +233,7 @@
 .playlist-card .secondary-action-button:hover {
   transform: translateY(-1px);
 }
+
 .view-button {
   background-color: transparent;
   border: 1px solid var(--border-color);
@@ -249,7 +254,6 @@
   transform: translateY(-2px);
 }
 
-/* Improved see-all-container with fixed positioning */
 .see-all-container {
   position: fixed;
   bottom: 24px;
@@ -259,7 +263,7 @@
   z-index: 10;
   padding: 16px 0;
   background: linear-gradient(to top, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
-  pointer-events: none; /* Allow scrolling behind the container */
+  pointer-events: none;
 }
 
 .see-all-button {
@@ -274,7 +278,7 @@
               transform var(--transition-speed) ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   text-decoration: none;
-  pointer-events: auto; /* Re-enable pointer events for the button */
+  pointer-events: auto;
   border: none;
 }
 
@@ -285,7 +289,7 @@
   color: white;
 }
 
-/* Custom scrollbar for playlist container */
+/* Scrollbar styling for playlist container */
 .playlists-scroll-container::-webkit-scrollbar {
   width: 8px;
 }
@@ -327,6 +331,8 @@
   .user-playlists-section {
     padding: 16px 16px 40px 16px;
     min-height: 400px;
+    height: calc(100vh - 250px);
+    max-height: calc(100vh - 250px);
   }
   
   .see-all-container {

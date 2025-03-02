@@ -1,17 +1,18 @@
 /* Complete PlaylistGeneration.css with improved button styling */
 .playlist-generation {
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
-  
+
 .playlist-generation-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 10px 24px;
-  width: 100%;
   flex: 1;
-  padding-bottom: 100px; /* Add padding to prevent content being hidden behind fixed buttons */
+  overflow-y: auto;
+  max-height: calc(100vh - 64px); /* Subtract header height */
+  position: relative;
+  padding-bottom: 90px; /* Space for fixed buttons */
 }
   
 .playlist-generation h1 {
@@ -21,13 +22,12 @@
 }
   
 .thinking-section {
+  height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 64px); /* Subtract header height */
-  text-align: center;
-  padding: 20px;
+  align-items: center;
+  overflow: hidden;
 }
   
 .thinking-animation {
@@ -93,9 +93,10 @@
 }
   
 .results-section {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  overflow: hidden;
 }
 
 /* Fixed action bar with gradient background */
@@ -156,18 +157,20 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  max-height: none;
-  height: auto;
-}
-
-/* Ensure sections have consistent styling */
-.user-selection-section,
-.recommendations-section {
-  display: flex;
-  flex-direction: column;
-  height: 450px; /* Fixed height on desktop */
+  height: calc(100vh - 300px);
+  max-height: calc(100vh - 300px);
   overflow: hidden;
 }
+
+/* User Selection and Recommendations Sections */
+.user-selection-section,
+.recommendations-section {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 
 .user-selection-section h2 {
   margin-top: 0;
@@ -595,7 +598,7 @@
 /* Scrollbar styling for desktop */
 .track-list::-webkit-scrollbar,
 .recommendation-grid::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .track-list::-webkit-scrollbar-track,
@@ -660,11 +663,9 @@
 @media (max-width: 768px) {
   .tracks-grid {
     grid-template-columns: 1fr;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    height: calc(100vh - 250px);
-    overflow-y: auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
   .recommendations-section h2 {
     margin-top: 0;
@@ -673,12 +674,7 @@
   }
   .user-selection-section,
   .recommendations-section {
-    flex: 1;
-    width: 100%;
-    margin: 0;
-    padding: 16px;
     max-height: 350px;
-    overflow-y: auto;
   }
 
   .track-list,
@@ -801,4 +797,21 @@
     z-index: 1000 !important;
     padding: 16px 0 !important;
   }
+
+  /* Fixed Action Bar */
+.fixed-button-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: linear-gradient(to top, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+}
+}
+.playlist-generation,
+.page-container,
+html, body, #root {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
 }
