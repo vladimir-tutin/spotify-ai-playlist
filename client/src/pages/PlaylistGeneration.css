@@ -671,12 +671,12 @@
 /* Mobile and Responsive Adjustments */
 @media (max-width: 768px) {
   .tracks-grid {
-    grid-template-columns: 1fr;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: calc(100vh - 250px);
+    max-height: calc(100vh - 250px);
     overflow-y: auto;
+    padding-bottom: 100px; /* Extra space for fixed buttons */
   }
 
   .user-selection-section,
@@ -685,13 +685,18 @@
     width: 100%;
     margin: 0;
     padding: 16px;
-    max-height: 350px;
-    overflow-y: auto;
+    max-height: none; /* Remove max-height constraint */
+    height: auto; /* Allow dynamic height */
   }
 
   .track-list,
   .recommendation-grid {
+    max-height: 350px; /* Constrain individual section heights */
     overflow-y: auto;
+  }
+
+  .content-panel {
+    height: auto; /* Ensure panels can expand */
   }
 
   /* Scrollbar for mobile */
