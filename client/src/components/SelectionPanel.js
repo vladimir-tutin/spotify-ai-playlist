@@ -59,7 +59,7 @@ function SelectionPanel() {
   return (
     <div className="selection-panel">
       <div className="selection-header">
-        <h2>Your Selection ({totalSelections})</h2>
+        <h2>Your Selection</h2>
         <span className="selection-count">
           {selectedTracks.length === 0 
             ? `No tracks selected yet`

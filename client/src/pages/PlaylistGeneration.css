@@ -808,7 +808,6 @@
     left: 0 !important;
     right: 0 !important;
     z-index: 1000 !important;
-    background: linear-gradient(to top, rgba(255,255,255,1) 80%, rgba(255,255,255,0)) !important;
     padding: 16px 0 !important;
   }
 }
