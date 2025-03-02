@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { usePlaylist } from '../contexts/PlaylistContext';
 import './SelectionPanel.css';
+import { RemoveIcon } from './Icons';
 
 function SelectionPanel() {
   const { 
@@ -121,7 +122,7 @@ function SelectionPanel() {
                     className="remove-button" 
                     onClick={(e) => handleRemoveTrack(e, track.id)}
                   >
-                    ×
+                    <RemoveIcon />
                   </button>
                 </div>
               ))
@@ -154,7 +155,7 @@ function SelectionPanel() {
                     className="remove-button" 
                     onClick={(e) => handleRemoveArtist(e, artist.id)}
                   >
-                    ×
+                    <RemoveIcon />
                   </button>
                 </div>
               ))
@@ -187,7 +188,7 @@ function SelectionPanel() {
                     className="remove-button" 
                     onClick={(e) => handleRemoveAlbum(e, album.id)}
                   >
-                    ×
+                    <RemoveIcon />
                   </button>
                 </div>
               ))
@@ -220,7 +221,7 @@ function SelectionPanel() {
                     className="remove-button" 
                     onClick={(e) => handleRemovePlaylist(e, playlist.id)}
                   >
-                    ×
+                    <RemoveIcon />
                   </button>
                 </div>
               ))

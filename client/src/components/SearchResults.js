@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './SearchResults.css';
+import { AddIcon, PlusIcon } from './Icons';
 
 function SearchResults({ results, type, loading, onSelect }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -106,7 +107,7 @@ function SearchResults({ results, type, loading, onSelect }) {
           <button className="add-button" onClick={(e) => {
             e.stopPropagation();
             onSelect(item);
-          }}>+</button>
+          }}><AddIcon /></button>
         </div>
       </div>
     );

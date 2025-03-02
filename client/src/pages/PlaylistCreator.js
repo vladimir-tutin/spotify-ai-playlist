@@ -7,6 +7,7 @@ import SearchBox from '../components/SearchBox';
 import SelectionPanel from '../components/SelectionPanel';
 import api from '../services/api';
 import './PlaylistCreator.css';
+import { MinusIcon, PlusIcon } from '../components/Icons';
 
 function PlaylistCreator() {
   const { 
@@ -112,7 +113,7 @@ function PlaylistCreator() {
                 onClick={() => setSongCount(Math.max(10, songCount - 1))}
                 disabled={songCount <= 10}
               >
-                -
+                <MinusIcon />
               </button>
               <span>{songCount}</span>
               <button 
@@ -120,7 +121,7 @@ function PlaylistCreator() {
                 onClick={() => setSongCount(Math.min(100, songCount + 1))}
                 disabled={songCount >= 100}
               >
-                +
+                <PlusIcon />
               </button>
             </div>
             
