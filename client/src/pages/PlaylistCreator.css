@@ -482,7 +482,7 @@
 
   .playlist-name-container input,
   .playlist-description-container textarea {
-    padding: 10px;
+    padding: 8px;
     font-size: 0.9rem;
   }
   
@@ -624,7 +624,7 @@
     width: 100% !important;
     max-width: none !important;
     box-sizing: border-box !important;
-    min-height: 150px !important;
+    min-height: 220px !important;
   }
   
   .playlist-creator .search-controls,

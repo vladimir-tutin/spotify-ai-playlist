@@ -1,4 +1,4 @@
-// Updated PlaylistGeneration.js with consistent button styling
+// Updated PlaylistGeneration.js with JSON sanitizer
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePlaylist } from '../contexts/PlaylistContext';
@@ -6,6 +6,103 @@ import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import api from '../services/api';
 import './PlaylistGeneration.css';
+
+// Add the sanitizer function directly in this file (alternatively, you could put it in a separate utility file)
+function sanitizeAndParseAIResponse(aiResponse) {
+  try {
+    // First, try to extract JSON content if it's wrapped in markdown code blocks
+    let jsonContent = aiResponse;
+    
+    // Extract content from markdown code blocks if present
+    const codeBlockMatch = aiResponse.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (codeBlockMatch && codeBlockMatch[1]) {
+      jsonContent = codeBlockMatch[1];
+    }
+    
+    // Handle unescaped quotes within string values
+    // This is a critical issue when AI puts quotes inside text like "similar to "Track Name""
+    let sanitizedJson = '';
+    let inString = false;
+    let escapeNext = false;
+    
+    for (let i = 0; i < jsonContent.length; i++) {
+      const char = jsonContent[i];
+      const nextChar = i < jsonContent.length - 1 ? jsonContent[i + 1] : '';
+      
+      if (escapeNext) {
+        sanitizedJson += char;
+        escapeNext = false;
+        continue;
+      }
+      
+      if (char === '\\') {
+        sanitizedJson += char;
+        escapeNext = true;
+        continue;
+      }
+      
+      if (char === '"' && !inString) {
+        inString = true;
+        sanitizedJson += char;
+        continue;
+      }
+      
+      if (char === '"' && inString) {
+        // Check if this quote is ending the string or is inside the string
+        // If next char is :, , or }, it's likely ending the string
+        if ([',', '}', ']', ':'].includes(nextChar) || /\s/.test(nextChar)) {
+          inString = false;
+          sanitizedJson += char;
+        } else {
+          // This is likely a quote inside a string, escape it
+          sanitizedJson += '\\' + char;
+        }
+        continue;
+      }
+      
+      sanitizedJson += char;
+    }
+    
+    // Additional fixes for common issues
+    
+    // Fix missing commas after closing quotes in arrays/objects
+    sanitizedJson = sanitizedJson.replace(/"\s*}\s*"/g, '"},{"');
+    sanitizedJson = sanitizedJson.replace(/"\s*]\s*"/g, '"],"');
+    
+    // Remove trailing commas in arrays and objects (which are invalid in JSON)
+    sanitizedJson = sanitizedJson.replace(/,\s*}/g, '}');
+    sanitizedJson = sanitizedJson.replace(/,\s*]/g, ']');
+    
+    // Parse the sanitized JSON
+    return JSON.parse(sanitizedJson);
+  } catch (error) {
+    console.error('Error sanitizing or parsing JSON:', error);
+    
+    // As a fallback, try a more aggressive approach:
+    // Find anything that looks like a JSON object
+    try {
+      const possibleJsonMatch = aiResponse.match(/{[\s\S]*}/);
+      if (possibleJsonMatch) {
+        // Try to manually fix quotes in reasons which is a common problem area
+        let extracted = possibleJsonMatch[0];
+        
+        // Use a regex to find all reason fields and properly escape quotes within them
+        extracted = extracted.replace(/"reason":\s*"(.*?)(?<!\\)"/g, (match, p1) => {
+          // Escape unescaped quotes in the reason text
+          const escaped = p1.replace(/(?<!\\)"/g, '\\"');
+          return `"reason":"${escaped}"`;
+        });
+        
+        return JSON.parse(extracted);
+      }
+    } catch (fallbackError) {
+      console.error('Fallback parsing also failed:', fallbackError);
+      return null;
+    }
+    
+    return null;
+  }
+}
 
 function PlaylistGeneration() {
   const { streamId } = useParams();
@@ -35,7 +132,7 @@ function PlaylistGeneration() {
   const totalSelectedItems = selectedTracks.length + selectedArtists.length + 
                             selectedAlbums.length + selectedPlaylists.length;
   
-  // Add this useEffect hook to check stream status
+  // Updated useEffect hook with sanitizer
   useEffect(() => {
     let interval;
     
@@ -50,7 +147,35 @@ function PlaylistGeneration() {
         const response = await api.get(`/ai/stream-status/${streamId}`);
         console.log('Stream status response:', response.data);
         
-        const { status, content, analysis, recommendations, error: streamError, userTracks: streamUserTracks } = response.data;
+        const { status, content, error: streamError, userTracks: streamUserTracks } = response.data;
+
+        // Process AI response - handle the JSON parsing issue
+        let analysisData = null;
+        let recommendationsData = [];
+
+        if (content && status === 'completed') {
+          try {
+            // Use the sanitizer to safely parse the AI response
+            const parsedData = sanitizeAndParseAIResponse(content);
+            
+            if (parsedData) {
+              analysisData = parsedData.analysis || null;
+              recommendationsData = parsedData.recommendations || [];
+              
+              // Log successful parsing
+              console.log('Successfully parsed AI response:', {
+                analysis: analysisData,
+                recommendations: recommendationsData.length
+              });
+            } else {
+              // If sanitizer returns null, handle as error
+              throw new Error("Failed to parse AI response even after sanitization");
+            }
+          } catch (parseError) {
+            console.error('Error parsing AI response:', parseError);
+            setError(`Failed to process AI response: ${parseError.message}`);
+          }
+        }
 
         // Store user tracks if they're included in the response
         if (streamUserTracks && streamUserTracks.length > 0) {
@@ -60,7 +185,7 @@ function PlaylistGeneration() {
           setUserTracks(selectedTracks);
         }
         
-        if (streamError) {
+        if (streamError && (!analysisData || recommendationsData.length === 0)) {
           setError(streamError);
           clearInterval(interval);
           setLoading(false);
@@ -70,8 +195,11 @@ function PlaylistGeneration() {
         if (status === 'completed') {
           setLoading(false);
           setAiThinking(false);
-          setAnalysis(analysis);
-          setRecommendations(recommendations || []);
+          
+          // Set data from sanitized parsing
+          if (analysisData) setAnalysis(analysisData);
+          if (recommendationsData.length > 0) setRecommendations(recommendationsData);
+          
           clearInterval(interval);
         }
       } catch (error) {
