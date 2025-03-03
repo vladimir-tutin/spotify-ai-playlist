@@ -29,7 +29,108 @@ class AIService {
     this.activeStreams = new Map();
     console.log('Active streams map initialized');
   }
-  
+  async validateRecommendations(streamId, accessToken) {
+    if (!this.activeStreams.has(streamId)) {
+      console.log(`Stream ${streamId} not found for validation`);
+      return false;
+    }
+    
+    const stream = this.activeStreams.get(streamId);
+    
+    if (!stream.recommendations || stream.recommendations.length === 0) {
+      console.log(`No recommendations to validate in stream ${streamId}`);
+      return false;
+    }
+    
+    // Skip if already validated
+    if (stream.validationComplete) {
+      console.log(`Stream ${streamId} already validated`);
+      return true;
+    }
+    
+    console.log(`Validating ${stream.recommendations.length} recommendations for stream ${streamId}`);
+    
+    const validatedRecs = [];
+    const notFoundRecs = [];
+    
+    // Create a SpotifyService instance for validation
+    const SpotifyService = require('../services/spotify');
+    const spotifyService = new SpotifyService();
+    
+    // Process recommendations in batches
+    const batchSize = 3; // Small batch size to avoid rate limits
+    for (let i = 0; i < stream.recommendations.length; i += batchSize) {
+      const batch = stream.recommendations.slice(i, i + batchSize);
+      
+      for (const rec of batch) {
+        try {
+          console.log(`Validating: "${rec.title}" by ${rec.artist}`);
+          
+          // Search Spotify
+          const query = `track:"${rec.title}" artist:"${rec.artist}"`;
+          const response = await spotifyService.search(accessToken, query, 'track', 3);
+          
+          if (response.tracks && response.tracks.items && response.tracks.items.length > 0) {
+            // Found a match
+            const track = response.tracks.items[0];
+            console.log(`✓ Found: "${track.name}" by ${track.artists[0].name}`);
+            
+            validatedRecs.push({
+              ...rec,
+              spotifyId: track.id,
+              spotifyUri: track.uri,
+              validated: true
+            });
+          } else {
+            // Try a more relaxed search
+            const relaxedQuery = `${rec.title} ${rec.artist}`;
+            const relaxedResponse = await spotifyService.search(accessToken, relaxedQuery, 'track', 3);
+            
+            if (relaxedResponse.tracks && relaxedResponse.tracks.items && relaxedResponse.tracks.items.length > 0) {
+              // Found a potential match with relaxed query
+              const track = relaxedResponse.tracks.items[0];
+              console.log(`? Possible match: "${track.name}" by ${track.artists[0].name}`);
+              
+              validatedRecs.push({
+                ...rec,
+                spotifyId: track.id,
+                spotifyUri: track.uri,
+                validated: true,
+                approximate: true
+              });
+            } else {
+              // No match found
+              console.log(`✗ Not found: "${rec.title}" by ${rec.artist}`);
+              notFoundRecs.push(rec);
+            }
+          }
+          
+          // Add a small delay to avoid rate limits
+          await new Promise(r => setTimeout(r, 200));
+        } catch (error) {
+          console.error(`Error validating track: "${rec.title}" by ${rec.artist}`, error);
+          notFoundRecs.push(rec);
+        }
+      }
+    }
+    
+    console.log(`Validation complete for stream ${streamId}:`);
+    console.log(`- ${validatedRecs.length} tracks found`);
+    console.log(`- ${notFoundRecs.length} tracks not found`);
+    
+    // Update the stream data
+    stream.recommendations = validatedRecs;
+    stream.notFoundRecommendations = notFoundRecs;
+    stream.validationComplete = true;
+    
+    return true;
+  }
+  updateStreamRecommendations(streamId, recommendations) {
+    if (this.activeStreams.has(streamId)) {
+      const stream = this.activeStreams.get(streamId);
+      stream.recommendations = recommendations;
+    }
+  }
   // Helper function to extract JSON from potential markdown response
   extractJsonFromResponse(text) {
     console.log('Extracting JSON from response...');
@@ -99,15 +200,34 @@ class AIService {
       
       // Create the prompt for Gemini
       const prompt = `
-        I have a list of songs that I enjoy. Please analyze these songs and tell me what musical patterns,
-        themes, or characteristics they share. Based on this analysis, suggest additional songs that would 
-        complement these tracks well in a playlist called "${playlistName}".
-        
-        Here are the songs:
+        I want to understand my musical taste based on the following tracks I like:
         ${JSON.stringify(trackData, null, 2)}
         
-        For each insight, explain your reasoning so I understand why you're making these connections.
-        Focus on musical elements like genre, tempo, mood, era, instrumentation, and lyrical themes.
+        Please analyze these tracks and identify:
+        1. Primary genres and subgenres represented in my selection
+        2. Musical attributes (tempo, energy, acousticness, danceability, etc.)
+        3. Mood and atmosphere characteristics
+        4. Era/time periods represented
+        5. Key musical elements (instruments, vocal styles, production techniques)
+        
+        DO NOT recommend specific songs.
+        
+        Provide your analysis in this JSON format:
+        {
+          "analysis": {
+            "playlistName": "${playlistName || 'My Personalized Playlist'}",
+            "genres": ["genre1", "genre2", "genre3"],
+            "attributes": {
+              "tempo": "description of typical tempo",
+              "energy": "energy level description",
+              "acousticness": "acoustic vs electronic description",
+              "mood": ["mood1", "mood2", "mood3"],
+              "era": ["era1", "era2"]
+            },
+            "artists": ["artist1", "artist2", "artist3"],
+            "detailed_insights": "detailed paragraph about my music taste"
+          }
+        }
       `;
       
       // Get the response from Gemini

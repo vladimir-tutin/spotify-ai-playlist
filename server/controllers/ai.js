@@ -1,4 +1,4 @@
-// server/controllers/ai.js - Updated with random track selection logic
+// server/controllers/ai.js
 const AIService = require('../services/ai');
 const SpotifyService = require('../services/spotify');
 
@@ -13,6 +13,56 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+async function getSpotifyRecommendations(accessToken, analysis, seedTracks, count) {
+  try {
+    const spotifyService = new SpotifyService();
+    
+    // Extract seed tracks (up to 5, which is Spotify's limit)
+    const trackSeeds = seedTracks
+      .sort(() => 0.5 - Math.random()) // Shuffle
+      .slice(0, 5)
+      .map(track => track.id);
+    
+    // Extract seed genres from AI analysis
+    const genreSeeds = analysis.genres || [];
+    
+    // Prepare recommendation parameters
+    const params = {
+      seed_tracks: trackSeeds.join(','),
+      limit: count
+    };
+    
+    // If we have genres from analysis, add them
+    if (genreSeeds.length > 0) {
+      // Spotify only allows 5 seeds total (tracks + artists + genres)
+      const remainingSeeds = 5 - trackSeeds.length;
+      if (remainingSeeds > 0) {
+        params.seed_genres = genreSeeds
+          .slice(0, remainingSeeds)
+          .map(genre => genre.toLowerCase().replace(/\s+/g, '-'))
+          .join(',');
+      }
+    }
+    
+    // Get recommendations from Spotify
+    const recommendations = await spotifyService.getRecommendations(accessToken, params);
+    
+    // Format the recommendations
+    return recommendations.tracks.map(track => ({
+      id: track.id,
+      title: track.name,
+      artist: track.artists[0].name,
+      uri: track.uri,
+      albumImage: track.album?.images?.[0]?.url,
+      reason: `This ${track.artists[0].name} track fits with your preference for ${analysis.genres[0] || 'this music style'}`
+    }));
+  } catch (error) {
+    console.error('Error getting Spotify recommendations:', error);
+    return [];
+  }
+}
+
 
 exports.generatePlaylist = async (req, res) => {
   console.time('generatePlaylist');
@@ -222,10 +272,120 @@ exports.analyzeTracks = async (req, res) => {
   }
 };
 
+// IMPORTANT: This needs to be a separate export, not nested inside generatePlaylist
+exports.createPlaylistFromRecommendations = async (req, res) => {
+  const accessToken = req.cookies.spotify_access_token;
+  const { streamId, playlistName, playlistDescription, songCount = 25 } = req.body;
+  
+  if (!streamId) {
+    return res.status(400).json({ error: 'Stream ID is required' });
+  }
+  
+  if (!accessToken) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+  
+  try {
+    // Get AI recommendations from the stream
+    const streamStatus = globalAIService.getStreamStatus(streamId);
+    
+    if (!streamStatus.exists || streamStatus.status !== 'completed') {
+      return res.status(400).json({ 
+        error: 'AI recommendations not completed or stream not found'
+      });
+    }
+    
+    const recommendations = streamStatus.recommendations || [];
+    const userTracks = streamStatus.userTracks || [];
+    const analysis = streamStatus.analysis || {};
+    
+    // For now, let's just implement a simple version without the validateAndResolveRecommendations function
+    // You can add that utility later
+    
+    // Step 1: Create a new playlist
+    const spotifyService = new SpotifyService();
+    const playlist = await spotifyService.createPlaylist(accessToken, {
+      name: playlistName || analysis.playlistName || 'AI Generated Playlist',
+      description: playlistDescription || 'Created with AI based on your musical taste.',
+      isPublic: false
+    });
+    
+    // Step 2: Search for each recommended track
+    const validatedTracks = [];
+    const notFoundTracks = [];
+    
+    for (const rec of recommendations) {
+      try {
+        // Create search queries
+        const searchQuery = `track:"${rec.title}" artist:"${rec.artist}"`;
+        
+        const searchResponse = await spotifyService.search(
+          accessToken, 
+          searchQuery, 
+          'track', 
+          5
+        );
+        
+        if (searchResponse.tracks?.items?.length > 0) {
+          // Find the best match (simplistic approach for now)
+          const track = searchResponse.tracks.items[0];
+          validatedTracks.push({
+            id: track.id,
+            uri: track.uri,
+            name: track.name,
+            artist: track.artists[0].name
+          });
+        } else {
+          notFoundTracks.push(rec);
+        }
+      } catch (error) {
+        console.error('Error searching for track:', error);
+        notFoundTracks.push(rec);
+      }
+    }
+    
+    // Step 3: Add tracks to the playlist
+    const tracksToAdd = [
+      ...userTracks.map(track => track.uri),
+      ...validatedTracks.map(track => track.uri)
+    ];
+    
+    // Add tracks in batches (Spotify API limitation)
+    const results = [];
+    for (let i = 0; i < tracksToAdd.length; i += 100) {
+      const batch = tracksToAdd.slice(i, i + 100);
+      const result = await spotifyService.addTracksToPlaylist(
+        accessToken,
+        playlist.id,
+        batch
+      );
+      results.push(result);
+    }
+    
+    res.json({
+      success: true,
+      playlistId: playlist.id,
+      playlistUrl: playlist.external_urls.spotify,
+      stats: {
+        totalTracks: tracksToAdd.length,
+        userTracks: userTracks.length,
+        aiTracks: validatedTracks.length,
+        notFound: notFoundTracks.length
+      },
+      validatedRecommendations: validatedTracks,
+      notFoundRecommendations: notFoundTracks
+    });
+  } catch (error) {
+    console.error('Error creating playlist:', error);
+    res.status(500).json({ error: 'Failed to create playlist: ' + error.message });
+  }
+};
+
 exports.getStreamStatus = async (req, res) => {
   console.log('Stream status requested for ID:', req.params.streamId);
   
   const { streamId } = req.params;
+  const accessToken = req.cookies.spotify_access_token;
   
   if (!streamId) {
     return res.status(400).json({ error: 'Stream ID is required' });
@@ -238,6 +398,16 @@ exports.getStreamStatus = async (req, res) => {
     if (!streamStatus.exists) {
       console.log(`Stream ${streamId} not found`);
       return res.status(404).json({ error: 'Stream not found or expired' });
+    }
+    
+    // IMPORTANT: Run validation if stream is completed but not yet validated
+    if (streamStatus.status === 'completed' && 
+        !streamStatus.validationComplete && 
+        streamStatus.recommendations && 
+        streamStatus.recommendations.length > 0) {
+      
+      console.log(`Stream ${streamId} is completed but not validated, running validation...`);
+      await globalAIService.validateRecommendations(streamId, accessToken);
     }
     
     console.log(`Returning status for stream ${streamId}:`, streamStatus.status);

@@ -1,4 +1,4 @@
-// Updated PlaylistGeneration.js with JSON sanitizer
+// client/src/pages/PlaylistGeneration.js - Enhanced track validation
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePlaylist } from '../contexts/PlaylistContext';
@@ -7,101 +7,18 @@ import Header from '../components/Header';
 import api from '../services/api';
 import './PlaylistGeneration.css';
 
-// Add the sanitizer function directly in this file (alternatively, you could put it in a separate utility file)
-function sanitizeAndParseAIResponse(aiResponse) {
-  try {
-    // First, try to extract JSON content if it's wrapped in markdown code blocks
-    let jsonContent = aiResponse;
-    
-    // Extract content from markdown code blocks if present
-    const codeBlockMatch = aiResponse.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-    if (codeBlockMatch && codeBlockMatch[1]) {
-      jsonContent = codeBlockMatch[1];
-    }
-    
-    // Handle unescaped quotes within string values
-    // This is a critical issue when AI puts quotes inside text like "similar to "Track Name""
-    let sanitizedJson = '';
-    let inString = false;
-    let escapeNext = false;
-    
-    for (let i = 0; i < jsonContent.length; i++) {
-      const char = jsonContent[i];
-      const nextChar = i < jsonContent.length - 1 ? jsonContent[i + 1] : '';
-      
-      if (escapeNext) {
-        sanitizedJson += char;
-        escapeNext = false;
-        continue;
-      }
-      
-      if (char === '\\') {
-        sanitizedJson += char;
-        escapeNext = true;
-        continue;
-      }
-      
-      if (char === '"' && !inString) {
-        inString = true;
-        sanitizedJson += char;
-        continue;
-      }
-      
-      if (char === '"' && inString) {
-        // Check if this quote is ending the string or is inside the string
-        // If next char is :, , or }, it's likely ending the string
-        if ([',', '}', ']', ':'].includes(nextChar) || /\s/.test(nextChar)) {
-          inString = false;
-          sanitizedJson += char;
-        } else {
-          // This is likely a quote inside a string, escape it
-          sanitizedJson += '\\' + char;
-        }
-        continue;
-      }
-      
-      sanitizedJson += char;
-    }
-    
-    // Additional fixes for common issues
-    
-    // Fix missing commas after closing quotes in arrays/objects
-    sanitizedJson = sanitizedJson.replace(/"\s*}\s*"/g, '"},{"');
-    sanitizedJson = sanitizedJson.replace(/"\s*]\s*"/g, '"],"');
-    
-    // Remove trailing commas in arrays and objects (which are invalid in JSON)
-    sanitizedJson = sanitizedJson.replace(/,\s*}/g, '}');
-    sanitizedJson = sanitizedJson.replace(/,\s*]/g, ']');
-    
-    // Parse the sanitized JSON
-    return JSON.parse(sanitizedJson);
-  } catch (error) {
-    console.error('Error sanitizing or parsing JSON:', error);
-    
-    // As a fallback, try a more aggressive approach:
-    // Find anything that looks like a JSON object
-    try {
-      const possibleJsonMatch = aiResponse.match(/{[\s\S]*}/);
-      if (possibleJsonMatch) {
-        // Try to manually fix quotes in reasons which is a common problem area
-        let extracted = possibleJsonMatch[0];
-        
-        // Use a regex to find all reason fields and properly escape quotes within them
-        extracted = extracted.replace(/"reason":\s*"(.*?)(?<!\\)"/g, (match, p1) => {
-          // Escape unescaped quotes in the reason text
-          const escaped = p1.replace(/(?<!\\)"/g, '\\"');
-          return `"reason":"${escaped}"`;
-        });
-        
-        return JSON.parse(extracted);
-      }
-    } catch (fallbackError) {
-      console.error('Fallback parsing also failed:', fallbackError);
-      return null;
-    }
-    
-    return null;
-  }
+// Add this helper function to normalize track names and artists for better matching
+function normalizeString(str) {
+  if (!str) return '';
+  return str
+    .toLowerCase()
+    // Remove special characters
+    .replace(/[^\w\s]/gi, '')
+    // Remove common words that might interfere with matching
+    .replace(/\b(feat|ft|featuring|with|prod|remix|version|edit|instrumental|radio|extended|original)\b/gi, '')
+    // Remove extra whitespace
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function PlaylistGeneration() {
@@ -127,12 +44,17 @@ function PlaylistGeneration() {
   const [userTracks, setUserTracks] = useState([]);
   const [playlistUrl, setPlaylistUrl] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [validationStats, setValidationStats] = useState({
+    found: 0,
+    notFound: 0,
+    fallbacks: 0
+  });
   
   // Add this to calculate total selected items
   const totalSelectedItems = selectedTracks.length + selectedArtists.length + 
                             selectedAlbums.length + selectedPlaylists.length;
   
-  // Updated useEffect hook with sanitizer
+  // Check stream status and handle the AI response
   useEffect(() => {
     let interval;
     
@@ -155,8 +77,8 @@ function PlaylistGeneration() {
 
         if (content && status === 'completed') {
           try {
-            // Use the sanitizer to safely parse the AI response
-            const parsedData = sanitizeAndParseAIResponse(content);
+            // Try to parse the AI response
+            const parsedData = parseAIResponse(content);
             
             if (parsedData) {
               analysisData = parsedData.analysis || null;
@@ -168,8 +90,8 @@ function PlaylistGeneration() {
                 recommendations: recommendationsData.length
               });
             } else {
-              // If sanitizer returns null, handle as error
-              throw new Error("Failed to parse AI response even after sanitization");
+              // If parsing fails, handle as error
+              throw new Error("Failed to parse AI response");
             }
           } catch (parseError) {
             console.error('Error parsing AI response:', parseError);
@@ -196,7 +118,7 @@ function PlaylistGeneration() {
           setLoading(false);
           setAiThinking(false);
           
-          // Set data from sanitized parsing
+          // Set data from parsing
           if (analysisData) setAnalysis(analysisData);
           if (recommendationsData.length > 0) setRecommendations(recommendationsData);
           
@@ -221,6 +143,135 @@ function PlaylistGeneration() {
     };
   }, [streamId, refreshTokens, selectedTracks, userTracks.length]);
   
+  // Helper function to parse AI response with improved error handling
+  function parseAIResponse(text) {
+    try {
+      // First, try direct parsing - maybe it's already valid JSON
+      return JSON.parse(text);
+    } catch (e) {
+      console.log('Direct JSON parse failed, trying to extract from markdown...');
+      
+      try {
+        // Look for JSON within markdown code blocks
+        const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+        if (jsonMatch && jsonMatch[1]) {
+          console.log('Found JSON within markdown block, parsing...');
+          return JSON.parse(jsonMatch[1]);
+        }
+        
+        // Look for JSON without markdown code blocks
+        const jsonRegex = /(\{[\s\S]*\})/g;
+        const matches = text.match(jsonRegex);
+        
+        if (matches && matches.length > 0) {
+          // Try each match until we find valid JSON
+          for (const match of matches) {
+            try {
+              console.log('Found potential JSON object, attempting to parse...');
+              return JSON.parse(match);
+            } catch (err) {
+              console.log('Parse attempt failed, trying next match...');
+            }
+          }
+        }
+        
+        // If we get here, we couldn't extract JSON
+        throw new Error('Could not extract valid JSON from the response');
+      } catch (err) {
+        console.error('JSON extraction failed:', err);
+        console.log('Full response text:', text);
+        throw new Error('Failed to extract JSON from AI response: ' + err.message);
+      }
+    }
+  }
+  
+  // Function to search for a track on Spotify with flexible matching
+  const searchTrackOnSpotify = async (rec) => {
+    try {
+      // Create multiple search queries with different formats to increase chances of finding the track
+      const searchQueries = [
+        // Exact search with quotes - high precision
+        `track:"${rec.title}" artist:"${rec.artist}"`,
+        // Relaxed search without quotes - higher recall
+        `${rec.title} ${rec.artist}`,
+        // Title only for very distinctive track names
+        `track:"${rec.title}"`,
+        // Remove special characters which might cause issues
+        `${rec.title.replace(/[^\w\s]/gi, '')} ${rec.artist.replace(/[^\w\s]/gi, '')}`
+      ];
+      
+      let trackFound = false;
+      let bestMatch = null;
+      
+      for (const query of searchQueries) {
+        if (trackFound) break;
+        
+        const searchResponse = await api.get('/spotify/search', {
+          params: {
+            q: query,
+            type: 'track',
+            limit: 5  // Get multiple results to increase chances
+          }
+        });
+        
+        if (searchResponse.data.tracks?.items?.length) {
+          // Find best match with more flexible matching
+          bestMatch = searchResponse.data.tracks.items.find(track => {
+            // Normalize track names for better matching
+            const normalizedTrackName = normalizeString(track.name);
+            const normalizedQueryName = normalizeString(rec.title);
+            
+            // Check if track name contains query name or vice versa
+            const nameMatch = 
+              normalizedTrackName.includes(normalizedQueryName) || 
+              normalizedQueryName.includes(normalizedTrackName);
+            
+            // Check if any artist name matches
+            const artistMatch = track.artists.some(artist => {
+              const normalizedArtistName = normalizeString(artist.name);
+              const normalizedQueryArtist = normalizeString(rec.artist);
+              return normalizedArtistName.includes(normalizedQueryArtist) || 
+                    normalizedQueryArtist.includes(normalizedArtistName);
+            });
+            
+            return nameMatch && artistMatch;
+          });
+          
+          if (bestMatch) {
+            trackFound = true;
+            break;
+          }
+        }
+      }
+      
+      return bestMatch;
+    } catch (error) {
+      console.error('Error searching for track:', error);
+      return null;
+    }
+  };
+  
+  // Function to get Spotify recommendations as a fallback
+  const getFallbackRecommendations = async (seedTracks, count) => {
+    try {
+      // Use up to 5 seed tracks (Spotify API limit)
+      const seeds = seedTracks.slice(0, 5).map(track => track.id).join(',');
+      
+      const response = await api.get('/spotify/recommendations', {
+        params: {
+          seed_tracks: seeds,
+          limit: count
+        }
+      });
+      
+      return response.data.tracks || [];
+    } catch (error) {
+      console.error('Error getting fallback recommendations:', error);
+      return [];
+    }
+  };
+  
+  // Enhanced createPlaylist function with robust track validation
   const createPlaylist = async () => {
     setGenerating(true);
     
@@ -239,103 +290,42 @@ function PlaylistGeneration() {
       const playlistId = playlistResponse.data.id;
       setProgress(30);
       
-      // Combine tracks from all sources
-      const allSourceTracks = [
-        ...userTracks, // Original user-selected tracks
-        ...(await Promise.all(selectedPlaylists.map(async (playlist) => {
-          try {
-            const playlistTracksResponse = await api.get(`/spotify/playlist/${playlist.id}`);
-            return playlistTracksResponse.data.items
-              .map(item => item.track)
-              .filter(track => track !== null);
-          } catch (error) {
-            console.error(`Error fetching tracks for playlist ${playlist.id}:`, error);
-            return [];
-          }
-        }))).flat() // Flatten playlist tracks
+      // Step 2: Filter out only validated recommendations
+      const validatedRecs = recommendations.filter(rec => rec.validated);
+      
+      // Step 3: Add tracks to playlist
+      const tracksToAdd = [
+        ...userTracks.map(track => track.uri),
+        ...validatedRecs.map(rec => rec.spotifyUri)
       ];
       
-      // Get the total number of tracks from the original request
-      const totalTracksRequested = songCount || 25;
-      
-      // Step 2: Find ALL recommendation tracks
       setProgress(50);
-      const tracksToAdd = [];
-      const notFoundTracks = [];
       
-      // First, add source tracks
-      tracksToAdd.push(...allSourceTracks.map(track => track.uri).slice(0, totalTracksRequested));
-      
-      // Then add recommended tracks if needed
-      while (tracksToAdd.length < totalTracksRequested && recommendations.length > 0) {
-        for (const rec of recommendations) {
-          if (tracksToAdd.length >= totalTracksRequested) break;
+      // If we don't have enough tracks, get recommendations from Spotify
+      if (tracksToAdd.length < songCount && userTracks.length > 0) {
+        try {
+          const seedTracks = userTracks.slice(0, 5).map(t => t.id).join(',');
+          const recResponse = await api.get('/spotify/recommendations', {
+            params: {
+              seed_tracks: seedTracks,
+              limit: songCount - tracksToAdd.length
+            }
+          });
           
-          try {
-            // Normalize title variations
-            const searchQueries = [
-              // Remove periods and spaces
-              rec.title.replace(/[. ]/g, ''),
-              // Original title
-              rec.title,
-              // Variations
-              rec.title.replace(/\./g, ''),
-              rec.title.replace(/ /g, '')
-            ];
-            
-            let trackFound = false;
-            
-            for (const query of searchQueries) {
-              const searchResponse = await api.get('/spotify/search', {
-                params: {
-                  q: `track:"${query}" artist:"${rec.artist}"`,
-                  type: 'track',
-                  limit: 5  // Get multiple results to increase chances
-                }
-              });
-              
-              // Find best match with more flexible matching
-              const bestMatch = searchResponse.data.tracks.items.find(track => {
-                // Remove periods and spaces from both track names for comparison
-                const normalizedTrackName = track.name.replace(/[. ]/g, '').toLowerCase();
-                const normalizedQueryName = query.replace(/[. ]/g, '').toLowerCase();
-                const normalizedArtist = track.artists.some(artist => 
-                  artist.name.toLowerCase().includes(rec.artist.toLowerCase())
-                );
-                
-                return normalizedTrackName === normalizedQueryName && normalizedArtist;
-              });
-              
-              if (bestMatch) {
-                tracksToAdd.push(bestMatch.uri);
-                trackFound = true;
-                break;
-              }
-            }
-            
-            // If no track found after all searches
-            if (!trackFound) {
-              notFoundTracks.push(rec);
-              console.warn(`Could not find track: ${rec.title} by ${rec.artist}`);
-            }
-          } catch (error) {
-            console.error('Error searching for track:', error);
-            notFoundTracks.push(rec);
-          }
+          const spotifyRecs = recResponse.data.tracks || [];
+          tracksToAdd.push(...spotifyRecs.map(t => t.uri));
+        } catch (error) {
+          console.error('Error getting fallback recommendations:', error);
         }
-        
-        // Break if we've added enough tracks or exhausted recommendations
-        if (tracksToAdd.length >= totalTracksRequested) break;
       }
-      
-      // Trim or pad tracks to match exact requested number
-      const finalTracksToAdd = tracksToAdd.slice(0, totalTracksRequested);
       
       setProgress(70);
       
       // Add tracks in batches (Spotify API limitation)
-      while (finalTracksToAdd.length > 0) {
-        const batch = finalTracksToAdd.splice(0, 100);
+      const uniqueTracks = [...new Set(tracksToAdd)].slice(0, songCount);
+      
+      for (let i = 0; i < uniqueTracks.length; i += 100) {
+        const batch = uniqueTracks.slice(i, i + 100);
         await api.post('/spotify/add-tracks', {
           playlistId,
           uris: batch
@@ -350,15 +340,9 @@ function PlaylistGeneration() {
       setGeneratedPlaylist({
         id: playlistId,
         name: analysis.playlistName || 'AI Generated Playlist',
-        userTracks: allSourceTracks,
-        recommendations: recommendations.slice(0, finalTracksToAdd.length),
-        notFoundTracks: notFoundTracks.length > 0 ? notFoundTracks : undefined
+        userTracks,
+        recommendations: validatedRecs
       });
-      
-      // Log tracks not found for debugging
-      if (notFoundTracks.length > 0) {
-        console.log('Tracks not found:', notFoundTracks);
-      }
       
     } catch (error) {
       console.error('Error creating playlist:', error);
@@ -378,43 +362,43 @@ function PlaylistGeneration() {
   
   return (
     <div className="page-container">
-  <Header />
-  
-    <div className="content-container content-with-fixed-buttons">
-      <h1 className="page-title">Your AI-Powered Playlist</h1>
+      <Header />
       
-      {loading && (
-  <div className="thinking-section">
-    <div className="analyzing-visual">
-      <div className="listening-waves"></div>
-      <div className="brain-icon">🧠</div>
-      <div className="music-note">♪</div>
-      <div className="music-note">♫</div>
-      <div className="music-note">♩</div>
-      <div className="music-note">♬</div>
-      <div className="music-note">🎵</div>
-    </div>
-    
-    <h2 className="thinking-title">Creating Your Perfect Playlist</h2>
-    <p className="thinking-message">AI is analyzing your music selection and generating recommendations...</p>
-    
-    <div className="thinking-animation">
-      <div className="dot"></div>
-      <div className="dot"></div>
-      <div className="dot"></div>
-    </div>
-    
-    {/* Add selection summary for better user feedback */}
-    <div className="selection-summary">
-      <p>
-        Based on your selection of {selectedTracks.length} tracks
-        {selectedArtists.length > 0 ? `, ${selectedArtists.length} artists` : ''}
-        {selectedAlbums.length > 0 ? `, ${selectedAlbums.length} albums` : ''}
-        {selectedPlaylists.length > 0 ? `, ${selectedPlaylists.length} playlists` : ''}
-      </p>
-    </div>
-  </div>
-)}
+      <div className="content-container content-with-fixed-buttons">
+        <h1 className="page-title">Your AI-Powered Playlist</h1>
+        
+        {loading && (
+          <div className="thinking-section">
+            <div className="analyzing-visual">
+              <div className="listening-waves"></div>
+              <div className="brain-icon">🧠</div>
+              <div className="music-note">♪</div>
+              <div className="music-note">♫</div>
+              <div className="music-note">♩</div>
+              <div className="music-note">♬</div>
+              <div className="music-note">🎵</div>
+            </div>
+            
+            <h2 className="thinking-title">Creating Your Perfect Playlist</h2>
+            <p className="thinking-message">AI is analyzing your music selection and generating recommendations...</p>
+            
+            <div className="thinking-animation">
+              <div className="dot"></div>
+              <div className="dot"></div>
+              <div className="dot"></div>
+            </div>
+            
+            {/* Add selection summary for better user feedback */}
+            <div className="selection-summary">
+              <p>
+                Based on your selection of {selectedTracks.length} tracks
+                {selectedArtists.length > 0 ? `, ${selectedArtists.length} artists` : ''}
+                {selectedAlbums.length > 0 ? `, ${selectedAlbums.length} albums` : ''}
+                {selectedPlaylists.length > 0 ? `, ${selectedPlaylists.length} playlists` : ''}
+              </p>
+            </div>
+          </div>
+        )}
         
         {error && (
           <div className="error-section">
@@ -464,33 +448,33 @@ function PlaylistGeneration() {
               <div className="content-panel user-selection-section">
                 <h2 className="section-title">Your Selected Tracks</h2>
                 {userTracks.length > 0 ? (
-                    <div className="track-list">
-                      {userTracks.slice(0, Math.floor(songCount / 2)).map((track) => (
-                        <div className="track-item" key={track.id}>
-                          <div className="track-image">
-                            {track.album?.images?.[0] ? (
-                              <img src={track.album.images[0].url} alt={track.name} />
-                            ) : (
-                              <div className="track-image-placeholder">♪</div>
-                            )}
-                          </div>
-                          <div className="track-info">
-                            <h3>{track.name}</h3>
-                            <p>{track.artists ? track.artists.map(a => a.name).join(', ') : 'Unknown Artist'}</p>
-                          </div>
+                  <div className="track-list">
+                    {userTracks.slice(0, Math.floor(songCount / 2)).map((track) => (
+                      <div className="track-item" key={track.id}>
+                        <div className="track-image">
+                          {track.album?.images?.[0] ? (
+                            <img src={track.album.images[0].url} alt={track.name} />
+                          ) : (
+                            <div className="track-image-placeholder">♪</div>
+                          )}
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="empty-selection">
-                      <p>
-                        {totalSelectedItems > 0 ? 
-                          `${totalSelectedItems} items analyzed (${selectedTracks.length} tracks, ${selectedArtists.length} artists, ${selectedAlbums.length} albums, ${selectedPlaylists.length} playlists)` :
-                          'No tracks could be found in your selection'
-                        }
-                      </p>
-                    </div>
-                  )}
+                        <div className="track-info">
+                          <h3>{track.name}</h3>
+                          <p>{track.artists ? track.artists.map(a => a.name).join(', ') : 'Unknown Artist'}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-selection">
+                    <p>
+                      {totalSelectedItems > 0 ? 
+                        `${totalSelectedItems} items analyzed (${selectedTracks.length} tracks, ${selectedArtists.length} artists, ${selectedAlbums.length} albums, ${selectedPlaylists.length} playlists)` :
+                        'No tracks could be found in your selection'
+                      }
+                    </p>
+                  </div>
+                )}
               </div>
               
               {/* AI recommendations section */}
@@ -510,26 +494,51 @@ function PlaylistGeneration() {
               </div>
             </div>
             
+            {/* Validation display - only shown during/after playlist creation */}
+            {(generating || complete) && validationStats.notFound > 0 && (
+              <div className="content-panel validation-notice">
+                <h3>Track Validation</h3>
+                <p>
+                  {validationStats.found} out of {validationStats.found + validationStats.notFound} AI-recommended tracks were found on Spotify.
+                  {validationStats.fallbacks > 0 && ` ${validationStats.fallbacks} additional tracks were added from Spotify recommendations.`}
+                </p>
+              </div>
+            )}
+            
             <div className="fixed-button-container">
-  <div className="single-button-container">
-    {!complete ? (
-      <button 
-        className="primary-action-button" 
-        onClick={createPlaylist}
-        disabled={generating}
-      >
-        {generating ? 'Creating...' : 'Create Playlist in Spotify'}
-      </button>
-    ) : (
-      <div className="complete-message">
-        <h2>Playlist Created!</h2>
-        <button className="primary-action-button" onClick={openPlaylist}>
-          Open in Spotify
-        </button>
-      </div>
-    )}
-  </div>
-</div>
+              <div className="single-button-container">
+                {!complete ? (
+                  <button 
+                    className="primary-action-button" 
+                    onClick={createPlaylist}
+                    disabled={generating}
+                  >
+                    {generating ? (
+                      <>
+                        <span>Creating Playlist...</span>
+                        <div className="progress-container">
+                          <div className="progress-bar">
+                            <div 
+                              className="progress-fill" 
+                              style={{ width: `${progress}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      'Create Playlist in Spotify'
+                    )}
+                  </button>
+                ) : (
+                  <div className="complete-message">
+                    <h2>Playlist Created!</h2>
+                    <button className="primary-action-button" onClick={openPlaylist}>
+                      Open in Spotify
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
       </div>
