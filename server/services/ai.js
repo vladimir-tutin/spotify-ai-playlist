@@ -1,6 +1,7 @@
 // server/services/ai.js - Modified to store user tracks
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const uuid = require('uuid');
+const axios = require('axios'); // Add this import
 
 class AIService {
   constructor() {
@@ -246,156 +247,119 @@ class AIService {
     }
   }
   
-  async analyzeTracksStreaming(tracks, playlistName, playlistDescription = '', recommendationCount = 25, songCount = 25) {
-    try {
-      // Generate a stream ID
-      const streamId = uuid.v4();
-      console.log('Creating new stream with ID:', streamId);
-      
-      // Set up streaming data structure
-      const streamData = {
-        id: streamId,
-        content: '',
-        status: 'processing',
-        completed: false,
-        recommendations: [],
-        analysis: null,
-        playlistName: playlistName,
-        userTracks: tracks, // Store the user tracks in the stream data
-        timestamp: Date.now()
-      };
-      
-      // Store stream data right away
-      this.activeStreams.set(streamId, streamData);
-      console.log(`Stream ${streamId} added to activeStreams map, current count:`, this.activeStreams.size);
-      console.log('Active stream IDs:', Array.from(this.activeStreams.keys()).join(', '));
-      
-      // Access the Gemini-2.0-flash model
-      let model;
+// Replace the existing analyzeTracksStreaming method with this version
+async analyzeTracksStreaming(tracks, playlistName, playlistDescription = '', recommendationCount = 25, songCount = 25) {
+  try {
+    // Generate a stream ID
+    const streamId = uuid.v4();
+    console.log('Creating new stream with ID:', streamId);
+    
+    // Set up streaming data structure
+    const streamData = {
+      id: streamId,
+      content: '',
+      status: 'processing',
+      completed: false,
+      recommendations: [],
+      analysis: null,
+      playlistName: playlistName,
+      userTracks: tracks,
+      timestamp: Date.now()
+    };
+    
+    // Store stream data right away
+    this.activeStreams.set(streamId, streamData);
+    console.log(`Stream ${streamId} added to activeStreams map, current count:`, this.activeStreams.size);
+    console.log('Active stream IDs:', Array.from(this.activeStreams.keys()).join(', '));
+    
+    // Prepare the track information for analysis
+    const trackData = tracks.map(track => ({
+      id: track.id,
+      name: track.name,
+      artist: track.artists.map(a => a.name).join(', '),
+      album: track.album?.name,
+      popularity: track.popularity,
+      preview_url: track.preview_url,
+      uri: track.uri
+    }));
+    
+    // Prepare the data to send to the n8n webhook
+    const webhookData = {
+      trackData,
+      playlistName,
+      playlistDescription,
+      recommendationCount,
+      songCount,
+      streamId
+    };
+    
+    // Start the external recommendation process as an async operation
+    const generateResponse = async () => {
       try {
-        model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-      } catch (error) {
-        console.error('Failed to get Gemini model:', error.message);
-        streamData.status = 'error';
-        streamData.error = 'Failed to initialize AI model: ' + error.message;
-        streamData.completed = true;
-        return { id: streamId };
-      }
-      
-      // Prepare the track information for analysis
-      const trackData = tracks.map(track => ({
-        id: track.id,
-        name: track.name,
-        artist: track.artists.map(a => a.name).join(', '),
-        album: track.album?.name,
-        popularity: track.popularity,
-        preview_url: track.preview_url,
-        uri: track.uri
-      }));
-      
-      // Create the prompt for Gemini
-      const prompt = `
-        I want to create a Spotify playlist called "${playlistName}" with ${songCount} songs total.
-        ${playlistDescription ? `\nPlaylist Description: ${playlistDescription}\n` : ''}
-        I've selected ${tracks.length} songs that I like. Please analyze these songs to understand my taste
-        and then recommend exactly ${recommendationCount} more songs to complete my playlist.
+        console.log(`Starting n8n webhook request for stream ${streamId}`);
         
-        Here are my selected songs:
-        ${JSON.stringify(trackData, null, 2)}
-        
-        First, analyze the musical patterns in my selection (genre, tempo, mood, era, artists, etc.).
-        Then, recommend exactly ${recommendationCount} additional songs based on this analysis.
-        
-        For each recommendation, provide:
-        1. Song title
-        2. Artist name
-        3. A brief explanation of why this song fits with my taste
-        
-        IMPORTANT: Return your response as a JSON object without any markdown formatting, code blocks, or explanations.
-        The JSON must be directly parseable with JSON.parse().
-        
-        Use this exact structure:
-        {
-          "analysis": {
-            "playlistName": "${playlistName}",
-            "genres": ["list of main genres"],
-            "mood": ["list of moods"],
-            "era": ["list of eras"],
-            "themes": ["list of themes"],
-            "detailed_insights": "paragraph with detailed analysis"
-          },
-          "recommendations": [
-            {
-              "title": "Official song title as it appears on Spotify",
-              "artist": "Primary artist name (avoid featuring artists in the name)",
-              "reason": "Brief explanation of why this fits (1-2 sentences)"
-            }
-          ]
-        }
-      `;
-      
-      // Start the streaming generation as an async process
-      const generateResponse = async () => {
-        try {
-          console.log(`Starting Gemini API request for stream ${streamId}`);
-          const result = await model.generateContent(prompt);
-          const response = await result.response;
-          const analysisText = response.text();
-          
-          console.log(`Received AI response for stream ${streamId}, processing...`);
-          
-          try {
-            // Try to extract and parse the JSON response
-            const aiResponse = this.extractJsonFromResponse(analysisText);
-            
-            // Make sure the playlistName is included in the response
-            if (!aiResponse.analysis.playlistName) {
-              aiResponse.analysis.playlistName = playlistName;
-            }
-            
-            // Update stream data
-            streamData.content = analysisText;
-            streamData.status = 'completed';
-            streamData.completed = true;
-            streamData.analysis = aiResponse.analysis;
-            streamData.recommendations = aiResponse.recommendations;
-            
-            console.log(`Stream ${streamId} processing completed successfully`);
-          } catch (jsonError) {
-            console.error(`Failed to parse AI response as JSON for stream ${streamId}:`, jsonError);
-            console.log('Response text:', analysisText.substring(0, 500) + '...');
-            
-            streamData.content = analysisText;
-            streamData.status = 'error';
-            streamData.error = 'Failed to parse AI response. Details: ' + jsonError.message;
-            streamData.completed = true;
+        // Make POST request to the webhook
+        const response = await axios.post(
+          process.env.RECOMMENDATIONS_WEBHOOK_URL,
+          webhookData,
+          {
+            headers: { 'Content-Type': 'application/json' }
           }
-        } catch (error) {
-          console.error(`AI streaming error for stream ${streamId}:`, error);
+        );
+        
+        console.log(`Received webhook response for stream ${streamId}, processing...`);
+        
+        try {
+          // Process the webhook response
+          const webhookResponse = response.data;
+          
+          // Make sure the playlistName is included in the response
+          if (!webhookResponse.analysis?.playlistName) {
+            webhookResponse.analysis.playlistName = playlistName;
+          }
+          
+          // Update stream data
+          streamData.content = JSON.stringify(webhookResponse);
+          streamData.status = 'completed';
+          streamData.completed = true;
+          streamData.analysis = webhookResponse.analysis;
+          streamData.recommendations = webhookResponse.recommendations;
+          
+          console.log(`Stream ${streamId} processing completed successfully`);
+        } catch (jsonError) {
+          console.error(`Failed to process webhook response for stream ${streamId}:`, jsonError);
+          
+          streamData.content = JSON.stringify(response.data);
           streamData.status = 'error';
-          streamData.error = error.message;
+          streamData.error = 'Failed to process webhook response. Details: ' + jsonError.message;
           streamData.completed = true;
         }
-      };
-      
-      // Start generating in the background
-      generateResponse();
-      
-      // Set a cleanup timeout (remove old streams after 1 hour)
-      setTimeout(() => {
-        if (this.activeStreams.has(streamId)) {
-          console.log(`Removing expired stream ${streamId}`);
-          this.activeStreams.delete(streamId);
-        }
-      }, 60 * 60 * 1000);
-      
-      // Return stream ID immediately
-      return { id: streamId };
-    } catch (error) {
-      console.error('AI streaming setup error:', error);
-      throw new Error('Failed to set up AI analysis stream: ' + error.message);
-    }
+      } catch (error) {
+        console.error(`Webhook request error for stream ${streamId}:`, error);
+        streamData.status = 'error';
+        streamData.error = error.message;
+        streamData.completed = true;
+      }
+    };
+    
+    // Start generating in the background
+    generateResponse();
+    
+    // Set a cleanup timeout (remove old streams after 1 hour)
+    setTimeout(() => {
+      if (this.activeStreams.has(streamId)) {
+        console.log(`Removing expired stream ${streamId}`);
+        this.activeStreams.delete(streamId);
+      }
+    }, 60 * 60 * 1000);
+    
+    // Return stream ID immediately
+    return { id: streamId };
+  } catch (error) {
+    console.error('Webhook streaming setup error:', error);
+    throw new Error('Failed to set up webhook analysis stream: ' + error.message);
   }
+}
   
   getStreamStatus(streamId) {
     console.log(`Checking status for stream ID: ${streamId}`);
