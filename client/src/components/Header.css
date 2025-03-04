@@ -67,19 +67,15 @@
 }
 
 .theme-toggle-button {
-  padding: 8px 16px;
+  padding: 8px 8px;
   border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.0);
   color: var(--dark-text);
   font-size: 0.875rem;
   transition: background-color var(--transition-speed) ease;
   margin-right: 8px;
   cursor: pointer;
   border: none;
-}
-
-.theme-toggle-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
 }
   
 .logout-button {
