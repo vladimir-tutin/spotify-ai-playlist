@@ -412,7 +412,7 @@
 .analysis-details {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 2px;
   margin-bottom: 8px;
 }
 
@@ -738,7 +738,21 @@
   .recommendation-card {
     padding: 10px;
   }
-  
+  .analysis-item h3 {
+    margin: 0 0 2px;
+    font-size: 0.7rem;
+  }
+  .analysis-item p {
+    margin: 0 0 1px;
+    font-size: 0.5rem;
+  }
+  .analysis-detailed h3 {
+    margin: 0 0 2px;
+    font-size: 0.75rem;
+  } 
+  .analysis-detailed p {
+    font-size: 0.55rem;
+  } 
   .recommendation-image {
     width: 60px;
     height: 60px;
@@ -824,7 +838,7 @@
   /* Only the internal content should scroll */
   .track-list,
   .recommendation-grid {
-    max-height: 120px !important;
+    max-height: 145px !important;
     overflow-y: auto !important;
     border: 1px solid rgba(0,0,0,0.1) !important;
     border-radius: 8px !important;

@@ -10,85 +10,106 @@
   width: 100%; /* Full width */
 }
   
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 10;
+}
+  
+.logo {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+  
+.logo-text {
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: linear-gradient(to right, var(--primary-color), #1db954);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+  
+.user-profile {
+  display: flex;
+  align-items: center;
+}
+  
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
+  
+.profile-image,
+.profile-placeholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+  
+.profile-placeholder {
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+}
+  
+.username {
+  font-weight: 500;
+}
+
+.theme-toggle-button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+  font-size: 0.875rem;
+  transition: background-color var(--transition-speed) ease;
+  margin-right: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.theme-toggle-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+  
+.logout-button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+  font-size: 0.875rem;
+  transition: background-color var(--transition-speed) ease;
+}
+  
+.logout-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
   .header-container {
-    max-width: 1280px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 24px;
-    z-index: 10;
   }
-  
-  .logo {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo-text {
-    font-weight: 700;
-    font-size: 1.5rem;
-    background: linear-gradient(to right, var(--primary-color), #1db954);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
+
   .user-profile {
-    display: flex;
-    align-items: center;
-  }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
-    margin-right: 16px;
-  }
-  
-  .profile-image,
-  .profile-placeholder {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
-  
-  .profile-placeholder {
-    background-color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: white;
-  }
-  
-  .username {
-    font-weight: 500;
-  }
-  
-  .logout-button {
-    padding: 8px 16px;
-    border-radius: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: var(--dark-text);
-    font-size: 0.875rem;
-    transition: background-color var(--transition-speed) ease;
-  }
-  
-  .logout-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    scale: 75%;
+    transform-origin: right center; /* Ensure scaling happens from right side */
+    margin-right: -20px; /* Adjust as needed to fine-tune positioning */
   }
 
-  @media (max-width: 768px) {
-    .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .user-profile {
-      scale: 75%;
-      transform-origin: right center; /* Ensure scaling happens from right side */
-      margin-right: -20px; /* Adjust as needed to fine-tune positioning */
-    }
+  .theme-toggle-button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
 }

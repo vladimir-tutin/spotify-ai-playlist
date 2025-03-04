@@ -2,10 +2,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import './Header.css';
 
 function Header({ user, onLogout }) {
   const { currentUser, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   
   const handleLogout = () => {
@@ -46,6 +48,10 @@ function Header({ user, onLogout }) {
               )}
               <span className="username">{profileUser.display_name}</span>
             </div>
+            
+            <button className="theme-toggle-button" onClick={toggleTheme} title="Toggle Night Mode">
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
             
             <button className="logout-button" onClick={handleLogout}>
               Logout
