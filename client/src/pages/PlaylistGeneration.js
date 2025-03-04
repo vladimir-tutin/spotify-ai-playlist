@@ -1,4 +1,4 @@
-// client/src/pages/PlaylistGeneration.js - Enhanced track validation
+// client/src/pages/PlaylistGeneration.js - Updated to use URIs directly and display album art
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePlaylist } from '../contexts/PlaylistContext';
@@ -6,20 +6,6 @@ import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import api from '../services/api';
 import './PlaylistGeneration.css';
-
-// Add this helper function to normalize track names and artists for better matching
-function normalizeString(str) {
-  if (!str) return '';
-  return str
-    .toLowerCase()
-    // Remove special characters
-    .replace(/[^\w\s]/gi, '')
-    // Remove common words that might interfere with matching
-    .replace(/\b(feat|ft|featuring|with|prod|remix|version|edit|instrumental|radio|extended|original)\b/gi, '')
-    // Remove extra whitespace
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
 function PlaylistGeneration() {
   const { streamId } = useParams();
@@ -44,11 +30,6 @@ function PlaylistGeneration() {
   const [userTracks, setUserTracks] = useState([]);
   const [playlistUrl, setPlaylistUrl] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [validationStats, setValidationStats] = useState({
-    found: 0,
-    notFound: 0,
-    fallbacks: 0
-  });
   
   // Add this to calculate total selected items
   const totalSelectedItems = selectedTracks.length + selectedArtists.length + 
@@ -60,9 +41,6 @@ function PlaylistGeneration() {
     
     async function checkStreamStatus() {
       try {
-        // Log the request
-        console.log('Checking stream status for ID:', streamId);
-        
         // Ensure token is fresh
         await refreshTokens();
         
@@ -83,6 +61,15 @@ function PlaylistGeneration() {
             if (parsedData) {
               analysisData = parsedData.analysis || null;
               recommendationsData = parsedData.recommendations || [];
+              
+              // Mark all recommendations as pre-validated (important change)
+              if (recommendationsData.length > 0) {
+                recommendationsData = recommendationsData.map(rec => ({
+                  ...rec,
+                  validated: true,
+                  spotifyUri: rec.uri // Use the provided URI directly
+                }));
+              }
               
               // Log successful parsing
               console.log('Successfully parsed AI response:', {
@@ -185,93 +172,7 @@ function PlaylistGeneration() {
     }
   }
   
-  // Function to search for a track on Spotify with flexible matching
-  const searchTrackOnSpotify = async (rec) => {
-    try {
-      // Create multiple search queries with different formats to increase chances of finding the track
-      const searchQueries = [
-        // Exact search with quotes - high precision
-        `track:"${rec.title}" artist:"${rec.artist}"`,
-        // Relaxed search without quotes - higher recall
-        `${rec.title} ${rec.artist}`,
-        // Title only for very distinctive track names
-        `track:"${rec.title}"`,
-        // Remove special characters which might cause issues
-        `${rec.title.replace(/[^\w\s]/gi, '')} ${rec.artist.replace(/[^\w\s]/gi, '')}`
-      ];
-      
-      let trackFound = false;
-      let bestMatch = null;
-      
-      for (const query of searchQueries) {
-        if (trackFound) break;
-        
-        const searchResponse = await api.get('/spotify/search', {
-          params: {
-            q: query,
-            type: 'track',
-            limit: 5  // Get multiple results to increase chances
-          }
-        });
-        
-        if (searchResponse.data.tracks?.items?.length) {
-          // Find best match with more flexible matching
-          bestMatch = searchResponse.data.tracks.items.find(track => {
-            // Normalize track names for better matching
-            const normalizedTrackName = normalizeString(track.name);
-            const normalizedQueryName = normalizeString(rec.title);
-            
-            // Check if track name contains query name or vice versa
-            const nameMatch = 
-              normalizedTrackName.includes(normalizedQueryName) || 
-              normalizedQueryName.includes(normalizedTrackName);
-            
-            // Check if any artist name matches
-            const artistMatch = track.artists.some(artist => {
-              const normalizedArtistName = normalizeString(artist.name);
-              const normalizedQueryArtist = normalizeString(rec.artist);
-              return normalizedArtistName.includes(normalizedQueryArtist) || 
-                    normalizedQueryArtist.includes(normalizedArtistName);
-            });
-            
-            return nameMatch && artistMatch;
-          });
-          
-          if (bestMatch) {
-            trackFound = true;
-            break;
-          }
-        }
-      }
-      
-      return bestMatch;
-    } catch (error) {
-      console.error('Error searching for track:', error);
-      return null;
-    }
-  };
-  
-  // Function to get Spotify recommendations as a fallback
-  const getFallbackRecommendations = async (seedTracks, count) => {
-    try {
-      // Use up to 5 seed tracks (Spotify API limit)
-      const seeds = seedTracks.slice(0, 5).map(track => track.id).join(',');
-      
-      const response = await api.get('/spotify/recommendations', {
-        params: {
-          seed_tracks: seeds,
-          limit: count
-        }
-      });
-      
-      return response.data.tracks || [];
-    } catch (error) {
-      console.error('Error getting fallback recommendations:', error);
-      return [];
-    }
-  };
-  
-  // Enhanced createPlaylist function with robust track validation
+  // Enhanced createPlaylist function that skips validation since URIs are already provided
   const createPlaylist = async () => {
     setGenerating(true);
     
@@ -290,13 +191,10 @@ function PlaylistGeneration() {
       const playlistId = playlistResponse.data.id;
       setProgress(30);
       
-      // Step 2: Filter out only validated recommendations
-      const validatedRecs = recommendations.filter(rec => rec.validated);
-      
-      // Step 3: Add tracks to playlist
+      // Step 2: Add tracks to playlist - directly use URIs without validation
       const tracksToAdd = [
         ...userTracks.map(track => track.uri),
-        ...validatedRecs.map(rec => rec.spotifyUri)
+        ...recommendations.map(rec => rec.uri) // Use URIs directly without validation
       ];
       
       setProgress(50);
@@ -341,7 +239,7 @@ function PlaylistGeneration() {
         id: playlistId,
         name: analysis.playlistName || 'AI Generated Playlist',
         userTracks,
-        recommendations: validatedRecs
+        recommendations
       });
       
     } catch (error) {
@@ -358,6 +256,13 @@ function PlaylistGeneration() {
   
   const openPlaylist = () => {
     window.open(playlistUrl, '_blank');
+  };
+  
+  // Helper function to extract Spotify ID from URI
+  const getSpotifyId = (uri) => {
+    if (!uri) return null;
+    const parts = uri.split(':');
+    return parts.length === 3 ? parts[2] : null;
   };
   
   return (
@@ -477,33 +382,50 @@ function PlaylistGeneration() {
                 )}
               </div>
               
-              {/* AI recommendations section */}
+              {/* AI recommendations section - now with album artwork */}
               <div className="content-panel recommendations-section">
                 <h2 className="section-title">AI-Recommended Tracks ({recommendations.length})</h2>
                 <div className="recommendation-grid">
-                  {recommendations.map((rec, index) => (
-                    <div key={index} className="recommendation-card">
-                      <div className="recommendation-header">
-                        <h3>{rec.title}</h3>
-                        <p className="artist">{rec.artist}</p>
+                  {recommendations.map((rec, index) => {
+                    // Get Spotify ID from URI for constructing album art URL
+                    const trackId = getSpotifyId(rec.uri);
+                    
+                    return (
+                      <div key={index} className="recommendation-card">
+                        {/* Album artwork - use albumImage directly from recommendation */}
+                        <div className="recommendation-image">
+                          <a 
+                            href={trackId ? `https://open.spotify.com/track/${trackId}` : '#'} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            {rec.albumImage ? (
+                              <img 
+                                src={rec.albumImage} 
+                                alt={`${rec.title} by ${rec.artist}`}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = "https://via.placeholder.com/80?text=No+Cover";
+                                }}
+                              />
+                            ) : (
+                              <div className="track-image-placeholder">♪</div>
+                            )}
+                          </a>
+                        </div>
+                        <div className="recommendation-content">
+                          <div className="recommendation-header">
+                            <h3>{rec.title}</h3>
+                            <p className="artist">{rec.artist}</p>
+                          </div>
+                          <p className="reason">{rec.reason}</p>
+                        </div>
                       </div>
-                      <p className="reason">{rec.reason}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
-            
-            {/* Validation display - only shown during/after playlist creation */}
-            {(generating || complete) && validationStats.notFound > 0 && (
-              <div className="content-panel validation-notice">
-                <h3>Track Validation</h3>
-                <p>
-                  {validationStats.found} out of {validationStats.found + validationStats.notFound} AI-recommended tracks were found on Spotify.
-                  {validationStats.fallbacks > 0 && ` ${validationStats.fallbacks} additional tracks were added from Spotify recommendations.`}
-                </p>
-              </div>
-            )}
             
             <div className="fixed-button-container">
               <div className="single-button-container">

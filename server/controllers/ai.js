@@ -381,6 +381,7 @@ exports.createPlaylistFromRecommendations = async (req, res) => {
   }
 };
 
+// server/controllers/ai.js - Modified to skip redundant validation
 exports.getStreamStatus = async (req, res) => {
   console.log('Stream status requested for ID:', req.params.streamId);
   
@@ -400,14 +401,23 @@ exports.getStreamStatus = async (req, res) => {
       return res.status(404).json({ error: 'Stream not found or expired' });
     }
     
-    // IMPORTANT: Run validation if stream is completed but not yet validated
-    if (streamStatus.status === 'completed' && 
-        !streamStatus.validationComplete && 
-        streamStatus.recommendations && 
-        streamStatus.recommendations.length > 0) {
-      
-      console.log(`Stream ${streamId} is completed but not validated, running validation...`);
-      await globalAIService.validateRecommendations(streamId, accessToken);
+    // IMPORTANT: Skip validation - assuming recommendations already have URIs
+    // We're removing this validation check since the webhook now pre-validates tracks
+    
+    // Old code:
+    // if (streamStatus.status === 'completed' && 
+    //     !streamStatus.validationComplete && 
+    //     streamStatus.recommendations && 
+    //     streamStatus.recommendations.length > 0) {
+    //   console.log(`Stream ${streamId} is completed but not validated, running validation...`);
+    //   await globalAIService.validateRecommendations(streamId, accessToken);
+    // }
+    
+    // Mark as already validated if needed
+    if (streamStatus.status === 'completed' && !streamStatus.validationComplete && 
+        streamStatus.recommendations && streamStatus.recommendations.length > 0) {
+      console.log(`Skipping validation for stream ${streamId} as tracks already have URIs`);
+      streamStatus.validationComplete = true;
     }
     
     console.log(`Returning status for stream ${streamId}:`, streamStatus.status);

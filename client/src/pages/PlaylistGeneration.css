@@ -308,35 +308,69 @@
 .recommendation-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   overflow-y: auto;
   flex: 1;
 }
 
 .recommendation-card {
+  display: flex;
   background-color: var(--secondary-background);
   border-radius: 6px;
-  padding: 10px 12px;
+  padding: 12px;
   transition: transform var(--transition-speed) ease;
+  position: relative;
+  align-items: center;
 }
 
-.recommendation-card:hover {
-  transform: translateY(-2px);
+.recommendation-image {
+  width: 55px;
+  height: 55px;
+  min-width: 55px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 12px;
+  flex-shrink: 0;
 }
 
-.recommendation-header {
-  margin-bottom: 6px;
+.recommendation-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.recommendation-image:hover img {
+  transform: scale(1.05);
+}
+
+.recommendation-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
 }
 
 .recommendation-header h3 {
-  margin: 0 0 2px;
   font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .artist {
   margin: 0;
   color: var(--gray-text);
   font-size: 0.8rem;
+}
+
+.recommendation-card .reason {
+  color: var(--gray-text);
+  font-size: 0.75rem;
+  font-style: italic;
+  line-height: 1.2;
+  margin: 0;
 }
 
 .reason {
@@ -701,6 +735,19 @@
     background-color: var(--primary-color);
     border-radius: 3px;
   }
+  .recommendation-card {
+    padding: 10px;
+  }
+  
+  .recommendation-image {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+  }
+  
+  .recommendation-card .reason {
+    font-size: 0.7rem;
+  }
 }
 
 /* Very narrow screens */
@@ -814,4 +861,8 @@ html, body, #root {
   height: 100vh !important;
   max-height: 100vh !important;
   overflow: hidden !important;
+}
+.recommendation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
