@@ -1,0 +1,30 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff0;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  z-index: 1000;
+}
+
+.footer-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.footer-button {
+  background-color: #1db954;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 200px;
+}
+
+.footer-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
