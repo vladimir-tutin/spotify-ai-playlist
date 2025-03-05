@@ -60,6 +60,7 @@
 }
 
 .dashboard-content {
+  padding-top: 15px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -178,26 +179,29 @@
 
 .playlist-info {
   padding: 12px;
+  margin-top: -85px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 1));
+  z-index: 10;
+  position: relative;
 }
 
 .playlist-info h3 {
-  margin: 0 0 6px;
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: #333 1px 1px 2px;
 }
 
 .playlist-info p {
-  margin: 0 0 12px;
   font-size: 0.85rem;
   color: var(--gray-text);
+  text-shadow: #333 1px 1px 2px;
 }
 
 .playlist-actions {
   display: flex;
   gap: 8px;
-  margin-top: 12px;
 }
 
 .action-button {

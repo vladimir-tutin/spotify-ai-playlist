@@ -789,7 +789,7 @@
   flex: 1 !important;
   overflow-y: visible !important;
   position: relative !important;
-  padding-bottom: 100px !important; /* Space for fixed buttons */
+  padding-bottom: 50px !important; /* Space for fixed buttons */
 }
 
 /* Ensure results section can expand */
