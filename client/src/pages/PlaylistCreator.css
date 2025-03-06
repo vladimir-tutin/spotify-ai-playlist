@@ -286,6 +286,14 @@
     padding: 10px 16px;
     box-sizing: border-box;
   }
+  .playlist-description-container textarea {
+    resize: none;
+    height: 60px;
+  }
+
+  .playlist-name-container input, .playlist-description-container textarea {
+    padding: 10px 16px 4px 16px;
+  }
   
   /* Change to vertical layout with selection panel on top */
   .playlist-creator-grid {
@@ -570,19 +578,6 @@
 
 /* Mobile and responsive fixes */
 @media (max-width: 768px) {
-  .primary-action-button {
-    scale: 80% !important;
-    transform-origin: right center !important; /* Set transform origin to right side */
-    margin-left: auto !important; /* Push button to the right */
-    display: block !important; /* Ensure proper block layout */
-  }
-
-  .secondary-action-button {
-    scale: 80% !important;
-    transform-origin: left center !important; /* Set transform origin to right side */
-    margin-right: auto !important; /* Push button to the right */
-    display: block !important; /* Ensure proper block layout */
-  }
 
   /* Stack the grid on mobile */
   .playlist-creator-grid {

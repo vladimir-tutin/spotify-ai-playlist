@@ -110,7 +110,15 @@
     font-size: 0.8rem;
   }
 }
-
+@media (max-width: 400px) {
+  .logo {
+    width: 450px !important;
+    padding-left: 20px;
+  }
+  .logo-text {
+    font-size: 1.2rem !important;
+  }
+}
 .rotated-moon {
   transform: rotate(250deg);
 }
