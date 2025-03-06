@@ -513,3 +513,12 @@
     }
   }
 }
+
+.playlist-title {
+  color: var(--dark-text);
+}
+@media (max-width: 400px) {
+  .content-panel.playlists-panel {
+    max-height: calc(110vh - 370px) !important;
+}
+}

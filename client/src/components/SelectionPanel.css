@@ -3,29 +3,12 @@
   background-color: var(--secondary-background);
   border-radius: 8px;
   padding: 14px;
-  height: 100%;
+  height: calc(100vh - 460px);
   display: flex;
   flex-direction: column;
-  max-height: 450px;
   position: relative;
   padding-top: 20px; /* Add space for the label */
 }
-
-/* Add the floating label */
-/*.selection-panel::before {
-  content: "Your Selection";
-  position: absolute;
-  top: -10px;
-  left: 10px;
-  background-color: white;
-  color: black;
-  padding: 1px 12px;
-  border-radius: 20px;
-  border: 0.5px solid grey;
-  font-size: 0.75rem;
-  font-weight: 600;
-  z-index: 1;
-}*/
 
 .selection-header {
   display: flex;
@@ -83,7 +66,6 @@
   background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: var(--card-shadow);
-  max-height: 350px;
 }
 
 .tracks-container,
@@ -233,4 +215,8 @@
 .albums-container::-webkit-scrollbar-thumb:hover,
 .playlists-container::-webkit-scrollbar-thumb:hover {
   background-color: var(--primary-color);
+}
+
+body.dark h3 {
+  color: var(--dark-text);
 }

@@ -72,10 +72,13 @@ body.dark .playlist-description-container::before {
   border-color: #333;
 }
 
-body.dark h3, h2, span {
-  color: #f8f8f8;
+
+/* Primary Dark Text */
+body.dark h2.section-title {
+  color: var(--dark-text);
 }
 
+/* Secondry Dark Text */
 body.dark p {
   color: var(--gray-text);
 }
@@ -631,26 +634,9 @@ input, select, textarea {
 
 /* Additional adjustments to ensure consistency */
 
-/* Override existing panel styling conflicts */
-.user-selection-section,
-.recommendations-section {
-  height: auto !important; /* Override fixed heights */
-  padding: 16px 20px !important; /* Consistent with content-panel */
-  max-height: 450px; /* Still maintain max height */
-}
-
 /* Special fix for recommendations section */
 .recommendations-section::before {
   right: 16px !important; /* Adjust to match new padding */
-}
-
-/* Make playlist creator grid consistent */
-.playlist-creator-grid {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: 16px;
-  max-width: 100%;
-  margin: 0 auto 20px;
 }
 
 /* Make track list scrollable within panels */
@@ -672,24 +658,13 @@ input, select, textarea {
 
 /* Make responsive adjustments consistent */
 @media (max-width: 768px) {
-  .tracks-grid {
-    grid-template-columns: 1fr;
-    gap: 16px; /* Add consistent gap between sections */
-  }
 
   .section-title {
     margin-top: 0;
     margin-bottom: 0px;
     font-size: 1.2rem;
   }
-  .user-selection-section,
-  .recommendations-section {
-    height: 300px;
-    width: 100%; /* Ensure full width */
-    margin: 0; /* Remove any default margins */
-    padding: 16px; /* Consistent padding */
-  }
-  
+    
   .recommendation-grid {
     grid-template-columns: 1fr;
   }
@@ -739,53 +714,5 @@ input, select, textarea {
   .analysis-section {
     flex: 1;
     max-width: none !important; /* Override any max-width */
-  }
-}
-
-/* Special adjustments for very narrow screens (like Galaxy Fold) */
-@media (max-width: 380px) {
-  .content-container {
-    padding: 10px 12px 20px;
-  }
-  
-  .content-panel {
-    padding: 12px 14px;
-  }
-  
-  .primary-action-button,
-  .secondary-action-button {
-    padding: 8px 16px;
-    font-size: 0.85rem;
-  }
-  
-  .buttons-wrapper {
-    gap: 8px;
-  }
-  
-  .playlist-actions {
-    flex-direction: row;
-    gap: 6px;
-  }
-  
-  .action-button {
-    width: 100%;
-  }
-  
-  .user-selection-section,
-  .recommendations-section {
-    padding: 12px 14px !important;
-  }
-
-  .user-selection-section {
-    margin-top: 12px;
-  }
-
-  .playlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 8px;
-  }
-  
-  .create-button-container .primary-action-button {
-    min-width: 150px;
   }
 }

@@ -83,7 +83,7 @@
   padding: 12px 16px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   transition: border-color var(--transition-speed) ease,
               box-shadow var(--transition-speed) ease;
   background-color: var(--background-color);
@@ -208,9 +208,9 @@
 .playlist-creator-grid {
   display: grid;
   grid-template-columns: 3fr 1fr;
-  gap: 16px;
+  gap: 10px;
   max-width: 1124px;
-  margin: 0 auto;
+  margin: 10px 0 0 auto;
   margin-bottom: 20px;
 }
 
@@ -308,7 +308,7 @@
   
   /* Make selection panel fit horizontally */
   .selection-panel {
-    max-height: 280px; /* Limit overall height */
+    max-height: 200px; /* Limit overall height */
     padding: 12px;
     width: 100%;
     box-sizing: border-box;
@@ -426,110 +426,12 @@
     width: 100%;
     padding: 12px;
   }
-}
 
-/* Even narrower screens adjustments */
-@media (max-width: 480px) {
-  .content-container {
-    padding: 10px 12px;
-  }
-  
-  .selection-panel {
-    max-height: 250px;
-    padding: 10px;
-  }
-  
-  .search-box {
-    padding: 10px;
-  }
-  
-  .selection-header h2,
-  .section-title {
-    font-size: 1rem;
-    margin-bottom: 8px;
-  }
-  
-  .selection-count {
-    font-size: 0.7rem;
-  }
-  
-  .tab-button {
-    padding: 4px 8px;
-    font-size: 0.75rem;
-  }
-  
-  /* Adjust buttons to fit width */
-  .fixed-button-container {
-    padding: 12px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .buttons-wrapper {
-    width: 100%;
-    gap: 10px;
-  }
-  
-  .primary-action-button,
-  .secondary-action-button {
-    padding: 10px 16px;
-    font-size: 0.9rem;
-  }
-  
-  .playlist-details {
-    gap: 8px;
-  }
-
-  .playlist-name-container input,
-  .playlist-description-container textarea {
-    padding: 8px;
-    font-size: 0.9rem;
-  }
-  
-  /* Song count slider adjustments for very small screens */
-  .song-count-section {
-    flex-wrap: nowrap;
-    align-items: center;
-  }
-  
-  .song-count-container {
-    flex-shrink: 0;
-  }
-    
-  .song-count-container label {
-    font-size: 0.85rem;
-  }
-  
-  .song-count-container span {
-    min-width: 20px;
-    font-size: 0.9rem;
-  }
-  
-  /* For very small screens */
-  .song-count-container label {
-    font-size: 0.8rem;
-  }
-  
-  .song-count-container {
-    gap: 4px; /* Reduce gap between elements */
-  }
-  
-  .slider-container {
-    margin-left: 4px;
-  }
-}
-
-/* High-specificity CSS overrides for PlaylistCreator
-   Add this to the bottom of your PlaylistCreator.css file to override any conflicting styles */
-
-/* Force the grid to stack vertically on mobile with !important */
-@media (max-width: 768px) {
   .playlist-creator .playlist-creator-grid,
   .page-container .playlist-creator-grid,
   .content-container .playlist-creator-grid,
   body .playlist-creator-grid,
   div[class*="playlist-creator"] .playlist-creator-grid {
-    display: grid !important;
     grid-template-columns: 1fr !important; 
     grid-template-rows: auto auto !important;
     width: 100% !important;
@@ -652,26 +554,6 @@
     box-sizing: border-box !important;
   }
 }
-/* Width consistency fix - add to the end of PlaylistCreator.css */
-
-/* Make all primary containers share exact same width */
-.playlist-info-container,
-.playlist-creator-grid {
-  width: 100% !important;
-  max-width: 1124px !important; /* Match content-container's max-width */
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-/* Preserve grid layout but fix its width */
-.playlist-creator-grid {
-  display: grid !important;
-  grid-template-columns: 3fr 1fr !important;
-  gap: 16px !important;
-  background: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
 
 /* Make search and selection panels match content-panel styling */
 .search-section .search-box,
@@ -688,6 +570,20 @@
 
 /* Mobile and responsive fixes */
 @media (max-width: 768px) {
+  .primary-action-button {
+    scale: 80% !important;
+    transform-origin: right center !important; /* Set transform origin to right side */
+    margin-left: auto !important; /* Push button to the right */
+    display: block !important; /* Ensure proper block layout */
+  }
+
+  .secondary-action-button {
+    scale: 80% !important;
+    transform-origin: left center !important; /* Set transform origin to right side */
+    margin-right: auto !important; /* Push button to the right */
+    display: block !important; /* Ensure proper block layout */
+  }
+
   /* Stack the grid on mobile */
   .playlist-creator-grid {
     display: flex !important;
@@ -710,18 +606,8 @@
   }
 }
 
-/* Very narrow screens */
-@media (max-width: 375px) {
-  .search-section .search-box,
-  .selection-section .selection-panel,
-  .playlist-info-container {
-    padding: 12px !important;
-  }
-}
-/* Simple fix */
-@media (max-width: 380px) {
-  .content-container {
-    padding-left: 4px;
-    padding-right: 4px;
+@media (max-width: 400px) {
+  .search-results {
+    height: calc(100vh - 3360px) !important;
   }
 }

@@ -1,0 +1,131 @@
+.thinking-section {
+  text-align: center;
+  padding: 2rem;
+}
+
+.analyzing-visual {
+  position: relative;
+  height: 100px;
+  margin: 2rem 0;
+}
+
+.brain-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  font-size: 25px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 2s infinite;
+  z-index: 2;
+}
+
+.music-note {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.music-note:nth-child(3) { left: 40%; animation-delay: 0s; }
+.music-note:nth-child(4) { left: 45%; animation-delay: 0.5s; }
+.music-note:nth-child(5) { left: 50%; animation-delay: 1s; }
+.music-note:nth-child(6) { left: 55%; animation-delay: 1.5s; }
+.music-note:nth-child(7) { left: 60%; animation-delay: 2s; }
+
+.thinking-title {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.thinking-message {
+  color: var(--text-color);
+  margin-bottom: 2rem;
+}
+
+.thinking-animation {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+
+.selection-summary {
+  margin-top: 2rem;
+  color: var(--gray-text);
+}
+
+.listening-waves {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: rgba(29, 185, 84, 0.1);
+  animation: wave-pulse 2s infinite;
+}
+
+.listening-waves:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: rgba(29, 185, 84, 0.15);
+  animation: wave-pulse 2s infinite 0.3s;
+}
+
+.listening-waves:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(29, 185, 84, 0.2);
+  animation: wave-pulse 2s infinite 0.6s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-20px);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0);
+  }
+  40% { 
+    transform: scale(1);
+  }
+}

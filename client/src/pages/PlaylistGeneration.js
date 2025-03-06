@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import api from '../services/api';
 import './PlaylistGeneration.css';
+import ThinkingAnimation from '../components/ThinkingAnimation'
 
 function PlaylistGeneration() {
   const { streamId } = useParams();
@@ -274,34 +275,12 @@ function PlaylistGeneration() {
         
         {loading && (
           <div className="thinking-section">
-            <div className="analyzing-visual">
-              <div className="listening-waves"></div>
-              <div className="brain-icon">🧠</div>
-              <div className="music-note">♪</div>
-              <div className="music-note">♫</div>
-              <div className="music-note">♩</div>
-              <div className="music-note">♬</div>
-              <div className="music-note">🎵</div>
-            </div>
-            
-            <h2 className="thinking-title">Creating Your Perfect Playlist</h2>
-            <p className="thinking-message">AI is analyzing your music selection and generating recommendations...</p>
-            
-            <div className="thinking-animation">
-              <div className="dot"></div>
-              <div className="dot"></div>
-              <div className="dot"></div>
-            </div>
-            
-            {/* Add selection summary for better user feedback */}
-            <div className="selection-summary">
-              <p>
-                Based on your selection of {selectedTracks.length} tracks
-                {selectedArtists.length > 0 ? `, ${selectedArtists.length} artists` : ''}
-                {selectedAlbums.length > 0 ? `, ${selectedAlbums.length} albums` : ''}
-                {selectedPlaylists.length > 0 ? `, ${selectedPlaylists.length} playlists` : ''}
-              </p>
-            </div>
+            <ThinkingAnimation 
+              selectedTracks={selectedTracks}
+              selectedArtists={selectedArtists}
+              selectedAlbums={selectedAlbums}
+              selectedPlaylists={selectedPlaylists}
+            />
           </div>
         )}
         
@@ -431,7 +410,7 @@ function PlaylistGeneration() {
               <div className="single-button-container">
                 {!complete ? (
                   <button 
-                    className="primary-action-button" 
+                    className="create-playlist-button"
                     onClick={createPlaylist}
                     disabled={generating}
                   >

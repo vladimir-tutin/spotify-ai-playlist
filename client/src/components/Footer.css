@@ -2,8 +2,6 @@
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #fff0;
-  color: white;
   text-align: center;
   padding: 10px 0;
   z-index: 1000;
@@ -22,6 +20,8 @@
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 200px;
+  transition: background-color var(--transition-speed) ease,
+              transform var(--transition-speed) ease;
 }
 
 .footer-button:hover {

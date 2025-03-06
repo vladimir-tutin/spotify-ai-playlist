@@ -21,51 +21,6 @@
   text-align: center;
 }
   
-.thinking-section {
-  height: calc(100vh - 64px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-  
-.thinking-animation {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-  
-.dot {
-  width: 12px;
-  height: 12px;
-  background-color: var(--primary-color);
-  border-radius: 50%;
-  margin: 0 4px;
-  animation: bounce 1.5s infinite ease-in-out;
-}
-  
-.dot:nth-child(1) {
-  animation-delay: 0s;
-}
-  
-.dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-  
-.dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-  
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-}
-  
 .error-section {
   text-align: center;
   padding: 48px 0;
@@ -156,10 +111,10 @@
 .tracks-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  height: calc(100vh - 300px);
-  max-height: calc(100vh - 300px);
+  gap: 10px;
   overflow: hidden;
+  margin-top: 10px;
+  height: calc(100vh - 390px);
 }
 
 /* User Selection and Recommendations Sections */
@@ -195,6 +150,7 @@
 
 .track-list,
 .recommendation-grid {
+  gap: 5px;
   flex: 1;
   overflow-y: auto;
   padding-right: 8px; /* Space for scrollbar */
@@ -208,6 +164,7 @@
   background-color: var(--secondary-background);
   transition: transform 0.2s ease;
   position: relative;
+  margin-bottom: 5px;
 }
 
 .track-item:hover {
@@ -295,7 +252,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 450px;
 }
 
 .recommendations-section h2 {
@@ -504,130 +460,6 @@
   font-size: 1.2rem;
 }
 
-.thinking-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 64px); /* Subtract header height */
-  text-align: center;
-  padding: 20px;
-}
-
-.analyzing-visual {
-  position: relative;
-  width: 200px;
-  height: 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.music-note {
-  position: absolute;
-  font-size: 24px;
-  color: #aaa;
-  opacity: 0;
-  animation: float-note 3s infinite;
-}
-
-.music-note:nth-child(1) {
-  left: 0;
-  top: 40px;
-  animation-delay: 0s;
-}
-
-.music-note:nth-child(2) {
-  left: 40px;
-  top: 20px;
-  animation-delay: 0.4s;
-}
-
-.music-note:nth-child(3) {
-  left: 80px;
-  top: 60px;
-  animation-delay: 0.8s;
-}
-
-.music-note:nth-child(4) {
-  left: 120px;
-  top: 30px;
-  animation-delay: 1.2s;
-}
-
-.music-note:nth-child(5) {
-  left: 160px;
-  top: 50px;
-  animation-delay: 1.6s;
-}
-
-.brain-icon {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--primary-color);
-  color: white;
-  border-radius: 50%;
-  font-size: 30px;
-  position: relative;
-  animation: pulse 2s infinite;
-  z-index: 2;
-}
-
-.listening-waves {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background-color: rgba(29, 185, 84, 0.1);
-  animation: wave-pulse 2s infinite;
-}
-
-.listening-waves:before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background-color: rgba(29, 185, 84, 0.15);
-  animation: wave-pulse 2s infinite 0.3s;
-}
-
-.listening-waves:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: rgba(29, 185, 84, 0.2);
-  animation: wave-pulse 2s infinite 0.6s;
-}
-
-.thinking-title {
-  font-size: 1.5rem;
-  margin-bottom: 16px;
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.thinking-message {
-  font-size: 1.1rem;
-  color: var(--text-color);
-  margin-bottom: 24px;
-  max-width: 500px;
-}
 
 /* Scrollbar styling for desktop */
 .track-list::-webkit-scrollbar,
@@ -709,6 +541,14 @@
   .user-selection-section,
   .recommendations-section {
     max-height: 350px;
+
+  }
+
+  .user-selection-section h2{
+    font-size: 0.9rem;
+  }
+  .recommendations-section h2{
+    font-size: 0.9rem;
   }
 
   .track-list,
@@ -833,12 +673,19 @@
     max-height: none !important;
     min-height: auto !important;
     overflow: visible !important;
+    padding: 10px 16px 16px 16px !important;
   }
   
   /* Only the internal content should scroll */
-  .track-list,
+  .track-list {
+    max-height: 125px !important;
+    overflow-y: auto !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    border-radius: 8px !important;
+  }
+
   .recommendation-grid {
-    max-height: 145px !important;
+    max-height: calc(110vh - 770px) !important;
     overflow-y: auto !important;
     border: 1px solid rgba(0,0,0,0.1) !important;
     border-radius: 8px !important;
@@ -879,4 +726,18 @@ html, body, #root {
 .recommendation-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.dark span, h2 {
+  color: var(--dark-text);
+}
+@media (max-width: 440px) {
+  .recommendation-grid {
+    max-height: calc(110vh - 800px) !important;
+}
+}
+@media (max-width: 400px) {
+  .recommendation-grid {
+    max-height: calc(110vh - 840px) !important;
+}
 }

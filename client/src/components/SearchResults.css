@@ -5,7 +5,6 @@
   border-radius: 8px;
   background-color: var(--background-color);
   box-shadow: var(--card-shadow);
-  max-height: 375px;
 }
 
 .search-results.loading,
@@ -159,10 +158,4 @@
   display: flex;
   align-items: center;
   color: var(--gray-text);
-}
-
-@media (max-width: 768px) {
-  .results-grid {
-    grid-template-columns: repeat(3, 95px);
-  }
 }

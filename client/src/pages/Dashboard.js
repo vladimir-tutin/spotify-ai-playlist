@@ -122,7 +122,7 @@ export default function Dashboard() {
                         )}
                       </div>
                       <div className="playlist-info">
-                        <h3 title={playlist.name}>{playlist.name}</h3>
+                        <h3 className="playlist-title" title={playlist.name}>{playlist.name}</h3>
                         <p>{playlist.tracks.total} tracks</p>
                         
                         <div className="playlist-actions">

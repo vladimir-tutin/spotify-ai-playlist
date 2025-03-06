@@ -105,7 +105,7 @@ class SpotifyService {
     return response.data;
   }
   
-  async search(accessToken, query, type, limit = 20) {
+  async search(accessToken, query, type, limit = 40) {
     const response = await axios.get(`${this.baseUrl}/search`, {
       headers: { 'Authorization': `Bearer ${accessToken}` },
       params: { q: query, type, limit }
