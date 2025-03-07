@@ -296,35 +296,37 @@ function PlaylistGeneration() {
           <div className="results-section">
             <div className="analysis-section">
               <h2>Analysis of Your Music</h2>
-              {analysis && (
-                <>
-                  <div className="genre-chips">
-                    {analysis.genres?.map((genre, i) => (
-                      <span key={i} className="genre-chip">{genre}</span>
-                    ))}
-                  </div>
-                  
-                  <div className="analysis-details">
-                    <div className="analysis-item">
-                      <h3>Mood</h3>
-                      <p>{analysis.mood?.join(', ')}</p>
+              <div className="analysis-content">
+                {analysis && (
+                  <>
+                    <div className="genre-chips">
+                      {analysis.genres?.map((genre, i) => (
+                        <span key={i} className="genre-chip">{genre}</span>
+                      ))}
                     </div>
-                    <div className="analysis-item">
-                      <h3>Era</h3>
-                      <p>{analysis.era?.join(', ')}</p>
+                    
+                    <div className="analysis-details">
+                      <div className="analysis-item">
+                        <h3>Mood</h3>
+                        <p>{analysis.mood?.join(', ')}</p>
+                      </div>
+                      <div className="analysis-item">
+                        <h3>Era</h3>
+                        <p>{analysis.era?.join(', ')}</p>
+                      </div>
+                      <div className="analysis-item">
+                        <h3>Themes</h3>
+                        <p>{analysis.themes?.join(', ')}</p>
+                      </div>
                     </div>
-                    <div className="analysis-item">
-                      <h3>Themes</h3>
-                      <p>{analysis.themes?.join(', ')}</p>
+                    
+                    <div className="analysis-detailed">
+                      <h3>Detailed Insights</h3>
+                      <p>{analysis.detailed_insights}</p>
                     </div>
-                  </div>
-                  
-                  <div className="analysis-detailed">
-                    <h3>Detailed Insights</h3>
-                    <p>{analysis.detailed_insights}</p>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
             
             <div className="tracks-grid">

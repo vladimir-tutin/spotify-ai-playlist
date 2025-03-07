@@ -97,43 +97,83 @@
 }
 
 @media (max-width: 768px) {
-  .home-container h1 {
-    font-size: 2rem;
-  }
-  
-  .features {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .feature {
-    flex: 0 1 100%;
-    margin: 8px 0;
-  }
-  
-  .subheading {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
   .home-container {
-    padding: 16px 8px;
+    padding: 24px 16px;
+    justify-content: center; /* Center content vertically */
+    min-height: 100vh;
+    box-sizing: border-box; /* Ensure padding is included in height calc */
+  }
+
+  .home-content {
+    max-width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    min-height: 100%; /* Take full height of container */
   }
   
   .home-container h1 {
-    font-size: 1.75rem;
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    padding: 0 8px;
   }
   
   .subheading {
     font-size: 0.9rem;
+    margin-bottom: 20px;
+    padding: 0 12px;
+    line-height: 1.4;
+  }
+  
+  .features {
+    flex-direction: column;
+    align-items: center; /* Center features horizontally */
+    gap: 12px;
+    margin: 20px 0; /* Equal margin top and bottom */
+    padding: 0 8px;
+    width: 100%;
   }
   
   .feature {
-    padding: 12px;
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 16px 12px;
+    box-sizing: border-box;
+    max-width: 400px; /* Limit maximum width on mobile */
+  }
+  
+  .feature:hover {
+    transform: translateY(-5px); /* Reduce hover animation */
   }
   
   .feature i {
     font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  
+  .feature h3 {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+  
+  .feature p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .login-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    width: calc(100% - 32px);
+    max-width: 280px;
+    margin: 20px auto 0; /* Add some space above button */
+  }
+
+  .login-button img {
+    height: 20px;
+    margin-right: 8px;
   }
 }

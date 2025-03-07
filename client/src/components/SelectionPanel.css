@@ -220,3 +220,19 @@
 body.dark h3 {
   color: var(--dark-text);
 }
+
+/* Add this media query at the end of the file */
+@media screen and (max-width: 768px) {
+  .tab-button {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px; /* Adjust this value as needed */
+  }
+
+  .selection-tabs {
+    margin-bottom: 8px;
+  }
+}
