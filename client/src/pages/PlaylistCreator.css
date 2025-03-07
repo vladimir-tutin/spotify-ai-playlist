@@ -460,7 +460,6 @@
     width: 100% !important;
     box-sizing: border-box !important;
     max-width: none !important;
-    height: 100%;
   }
   
   .playlist-creator .search-section,
@@ -502,26 +501,7 @@
   .page-container .selected-items,
   .content-container .selected-items,
   body .selected-items {
-    max-height: 180px !important;
-    overflow-y: auto !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  
-  /* Ensure track containers scroll properly */
-  .playlist-creator .tracks-container,
-  .playlist-creator .artists-container,
-  .playlist-creator .albums-container,
-  .playlist-creator .playlists-container,
-  .content-container .tracks-container,
-  .content-container .artists-container,
-  .content-container .albums-container,
-  .content-container .playlists-container,
-  body .tracks-container,
-  body .artists-container,
-  body .albums-container,
-  body .playlists-container {
-    height: 135px !important;
+    max-height: 90px !important;
     overflow-y: auto !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -534,7 +514,6 @@
     width: 100% !important;
     max-width: none !important;
     box-sizing: border-box !important;
-    min-height: 220px !important;
   }
   
   .playlist-creator .search-controls,
@@ -578,25 +557,73 @@
 
 /* Mobile and responsive fixes */
 @media (max-width: 768px) {
+  /* Base container setup */
+  .playlist-creator {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-  /* Stack the grid on mobile */
+  .playlist-creator-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 10px 12px 88px; /* Account for fixed action buttons */
+    flex: 1;
+    overflow: hidden; /* Prevent scrolling of container */
+  }
+
+  /* Grid to flex conversion */
   .playlist-creator-grid {
     display: flex !important;
     flex-direction: column !important;
+    flex: 1;
+    min-height: 0; /* Enable flex child scrolling */
+    gap: 12px;
   }
-  
-  /* Fix mobile order */
+
+  /* Selection section - fixed height at top */
   .selection-section {
-    order: 1;
+    flex-shrink: 0;
+    height: auto;
+    max-height: 200px; /* Limit height */
   }
-  
+
+  .selection-panel {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  /* Search section - fill remaining space */
   .search-section {
-    order: 2;
+    flex: 1;
+    min-height: 0; /* Enable scrolling */
+    display: flex;
+    flex-direction: column;
   }
-  
-  /* Adjust padding for mobile */
-  .search-section .search-box,
-  .selection-section .selection-panel {
-    padding: 12px 16px !important;
+
+  .search-section .search-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .search-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+
+  /* Keep action buttons fixed at bottom */
+  .actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 12px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
   }
 }
